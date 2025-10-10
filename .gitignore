@@ -34,6 +34,16 @@ yawordle/[Aa]ssets/Plugins/Editor/JetBrains*
 # Visual Studio cache directory
 .vs/
 
+# Rider/IntelliJ files
+yawordle/.idea/
+
+# Unity User Settings
+yawordle/[Uu]ser[Ss]ettings/
+
+# Packages manifest lock file (często ignorowany, bo może powodować konflikty)
+# Niektórzy wolą go wersjonować, ale dla projektu solo bezpieczniej ignorować.
+yawordle/Packages/packages-lock.json
+
 # Gradle cache directory
 .gradle/
 
@@ -97,3 +107,5 @@ yawordle/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property
 
 # Auto-generated scenes by play mode tests
 yawordle/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+
