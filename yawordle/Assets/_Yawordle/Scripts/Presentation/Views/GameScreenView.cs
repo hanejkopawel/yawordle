@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer.Unity;
@@ -5,20 +6,30 @@ using Yawordle.Core;
 using Yawordle.Presentation.ViewModels;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
+using Yawordle.Infrastructure;
 
 namespace Yawordle.Presentation.Views
 {
     public class GameScreenView : IStartable
     {
         private readonly GameBoardViewModel _viewModel;
+        private readonly ISettingsService _settingsService;
+        private readonly IKeyboardLayoutProvider _keyboardLayoutProvider;
 
         private VisualElement _boardContainer;
         private VisualElement[][] _tileElements;
         private Label[][] _tileLabels;
+        private VisualElement _keyboardContainer;
+        private readonly Dictionary<char, Button> _keyButtons = new();
 
-        public GameScreenView(GameBoardViewModel viewModel)
+        public GameScreenView(
+            GameBoardViewModel viewModel, 
+            ISettingsService settingsService, 
+            IKeyboardLayoutProvider keyboardLayoutProvider)
         {
             _viewModel = viewModel;
+            _settingsService = settingsService;
+            _keyboardLayoutProvider = keyboardLayoutProvider;
         }
 
         public void Start()
@@ -29,8 +40,12 @@ namespace Yawordle.Presentation.Views
             _boardContainer = root.Q<VisualElement>("game-board-container");
             _boardContainer.focusable = true;
             _boardContainer.Focus();
+            
+            _keyboardContainer = root.Q<VisualElement>("keyboard-container");
+
 
             GenerateGrid();
+            GenerateKeyboard();
             BindToViewModel();
             BindKeyboardInput();
 
@@ -65,6 +80,47 @@ namespace Yawordle.Presentation.Views
                 }
                 _boardContainer.Add(rowElement);
             }
+        }
+        
+        private void GenerateKeyboard()
+        {
+            _keyboardContainer.Clear();
+            _keyButtons.Clear();
+
+            string currentLanguage = _settingsService.CurrentSettings.Language;
+            KeyboardLayout layout = _keyboardLayoutProvider.GetLayoutForLanguage(currentLanguage);
+            
+            foreach (var rowString in layout.KeyRows)
+            {
+                var rowElement = new VisualElement();
+                rowElement.AddToClassList("keyboard-row");
+                foreach (var keyChar in rowString)
+                {
+                    var keyButton = new Button { text = keyChar.ToString() };
+                    keyButton.AddToClassList("key");
+                    keyButton.clicked += () => _viewModel.TypeLetter(keyChar);
+                    rowElement.Add(keyButton);
+                    _keyButtons[keyChar] = keyButton;
+                }
+                _keyboardContainer.Add(rowElement);
+            }
+
+            var bottomRow = new VisualElement();
+            bottomRow.AddToClassList("keyboard-row");
+
+            var enterButton = new Button { text = "ENTER" };
+            enterButton.AddToClassList("key");
+            enterButton.AddToClassList("key--large");
+            enterButton.clicked += _viewModel.SubmitGuess;
+            bottomRow.Add(enterButton);
+
+            var backspaceButton = new Button { text = "⌫" };
+            backspaceButton.AddToClassList("key");
+            backspaceButton.AddToClassList("key--large");
+            backspaceButton.clicked += _viewModel.DeleteLetter;
+            bottomRow.Add(backspaceButton);
+            
+            _keyboardContainer.Add(bottomRow);
         }
         
         private void BindToViewModel()

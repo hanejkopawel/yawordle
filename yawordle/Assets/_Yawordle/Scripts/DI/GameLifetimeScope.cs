@@ -16,6 +16,7 @@ namespace Yawordle.DI
             builder.Register<ISettingsService, JsonSettingsService>(Lifetime.Singleton);
             
             // builder.Register<IWordProvider, ResourceWordProvider>(Lifetime.Singleton);
+            builder.Register<IKeyboardLayoutProvider, KeyboardLayoutProvider>(Lifetime.Singleton);
 
             builder.Register<GameBoardViewModel>(Lifetime.Singleton);
             
