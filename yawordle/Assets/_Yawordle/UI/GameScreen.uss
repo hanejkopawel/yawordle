@@ -1,0 +1,108 @@
+/* --- Zmienne Globalne (Paleta Kolorów i Rozmiary) --- */
+:root {
+    /* Paleta kolorów */
+    --color-background: rgb(18, 18, 19);
+    --color-text: white;
+    --color-tile-border-idle: rgb(58, 58, 60);
+    --color-tile-border-active: rgb(86, 87, 88);
+
+    /* Kolory stanu liter */
+    --color-correct: #538d4e;
+    --color-present: #b59f3b;
+    --color-absent: #3a3a3c;
+
+    /* Czcionki */
+    --font-size-title: 36px;
+    --font-size-tile: 32px;
+}
+
+/* --- Style Podstawowe --- */
+.screen-container {
+    flex-grow: 1; /* Pozwól kontenerowi zająć całą dostępną przestrzeń */
+    background-color: var(--color-background);
+    align-items: center; /* Wyśrodkuj elementy w poziomie */
+    justify-content: space-between; /* Rozłóż nagłówek, planszę i klawiaturę w pionie */
+    padding: 10px;
+}
+
+.header {
+    width: 100%;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: var(--font-size-title);
+    -unity-font-style: bold;
+    color: var(--color-text);
+    letter-spacing: 2px;
+}
+
+.game-area {
+    flex-grow: 1;
+    width: 100%;
+    justify-content: center; /* Wyśrodkuj planszę w pionie w dostępnym miejscu */
+    align-items: center;
+}
+
+/* --- Plansza i Kafelki --- */
+.game-board-container {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.row {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+
+.tile {
+    flex-grow: 1;
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    position: relative;
+    border-width: 2px;
+    border-color: var(--color-tile-border-idle);
+    justify-content: center; 
+    align-items: center;
+}
+
+.tile-label {
+    
+    position: absolute;
+    font-size: var(--font-size-tile);
+    -unity-font-style: bold;
+    color: var(--color-text);
+}
+
+/* --- Stany Kafelków --- */
+/* Zamiast :focus, będziemy dodawać klasę "active-row-tile" z kodu dla lepszej kontroli */
+.active-row-tile {
+    border-color: var(--color-tile-border-active);
+}
+
+.tile--correct {
+    background-color: var(--color-correct);
+    border-color: var(--color-correct);
+}
+.tile--present {
+    background-color: var(--color-present);
+    border-color: var(--color-present);
+}
+.tile--absent {
+    background-color: var(--color-absent);
+    border-color: var(--color-absent);
+}
+
+.keyboard-container {
+    width: 100%;
+    max-width: 600px;
+    align-items: center;
+    margin-top: 20px;
+}

@@ -1,0 +1,19 @@
+{
+    "name": "Yawordle.Presentation",
+    "rootNamespace": "",
+    "references": [
+        "GUID:eb6b4f14a35e048d591f2175b274a6de",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:c2bea8d01f4d478e8bb971789f3ad933",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
