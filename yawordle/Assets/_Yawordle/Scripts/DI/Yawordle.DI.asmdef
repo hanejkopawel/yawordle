@@ -1,0 +1,19 @@
+{
+    "name": "Yawordle.DI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:eb6b4f14a35e048d591f2175b274a6de",
+        "GUID:e332607943c2d2f87b833aac9fab477a",
+        "GUID:9f640cd22ac0ce52faab57c9007f87ae"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

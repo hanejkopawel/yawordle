@@ -1,0 +1,16 @@
+{
+    "name": "Yawordle.Infrastructure",
+    "rootNamespace": "Yawordle.Infrastructure",
+    "references": [
+        "GUID:eb6b4f14a35e048d591f2175b274a6de"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
