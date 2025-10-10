@@ -1,79 +1,60 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer.Unity;
 using Yawordle.Core;
 using Yawordle.Presentation.ViewModels;
+using Cysharp.Threading.Tasks;
+using PrimeTween;
+using Yawordle.Infrastructure;
 
 namespace Yawordle.Presentation.Views
 {
-    /// <summary>
-    /// Klasa Widoku (View) dla głównego ekranu gry.
-    /// Jej jedynym zadaniem jest renderowanie stanu dostarczonego przez GameBoardViewModel
-    /// i przekazywanie akcji użytkownika (np. naciśnięcia klawiszy) do ViewModelu.
-    /// Jest "głupia" - nie zawiera żadnej logiki gry.
-    /// </summary>
     public class GameScreenView : IStartable
     {
         private readonly GameBoardViewModel _viewModel;
+        private readonly ISettingsService _settingsService;
+        private readonly IKeyboardLayoutProvider _keyboardLayoutProvider;
 
-        // Referencje do dynamicznie tworzonych elementów UI, abyśmy mogli je aktualizować.
         private VisualElement _boardContainer;
         private VisualElement[][] _tileElements;
         private Label[][] _tileLabels;
+        private VisualElement _keyboardContainer;
+        private readonly Dictionary<char, Button> _keyButtons = new();
 
-        /// <summary>
-        /// Konstruktor jest wywoływany przez kontener VContainer.
-        /// Wstrzykuje ViewModel, od którego ten widok jest zależny.
-        /// </summary>
-        public GameScreenView(GameBoardViewModel viewModel)
+        public GameScreenView(
+            GameBoardViewModel viewModel, 
+            ISettingsService settingsService, 
+            IKeyboardLayoutProvider keyboardLayoutProvider)
         {
             _viewModel = viewModel;
+            _settingsService = settingsService;
+            _keyboardLayoutProvider = keyboardLayoutProvider;
         }
 
-        /// <summary>
-        /// Metoda wywoływana przez VContainer po zainicjowaniu wszystkich zależności.
-        /// To tutaj inicjujemy nasz widok.
-        /// </summary>
         public void Start()
         {
-            // Znajdujemy główny dokument UI w scenie.
-            // W bardziej złożonym projekcie można by przekazać referencję w inny sposób.
-            var uiDocument = Object.FindObjectOfType<UIDocument>();
-            if (uiDocument == null)
-            {
-                Debug.LogError("Nie znaleziono UIDocument w scenie!");
-                return;
-            }
+            var uiDocument = Object.FindAnyObjectByType<UIDocument>();
             var root = uiDocument.rootVisualElement;
 
             _boardContainer = root.Q<VisualElement>("game-board-container");
-            if (_boardContainer == null)
-            {
-                Debug.LogError("Nie znaleziono 'game-board-container' w UXML!");
-                return;
-            }
-
-            // Ustawiamy focus na kontenerze z kodu - to pewniejsze niż w UXML.
             _boardContainer.focusable = true;
             _boardContainer.Focus();
+            
+            _keyboardContainer = root.Q<VisualElement>("keyboard-container");
 
-            // Uruchamiamy proces tworzenia i bindowania UI.
+
             GenerateGrid();
+            GenerateKeyboard();
             BindToViewModel();
             BindKeyboardInput();
 
-            // Rejestrujemy callback, który zadba o kwadratowy kształt kafelków,
-            // gdy UI zostanie narysowane i jego wymiary będą znane.
             _boardContainer.RegisterCallback<GeometryChangedEvent>(OnBoardGeometryChanged);
         }
 
-        /// <summary>
-        /// Dynamicznie tworzy siatkę kafelków wewnątrz _boardContainer na podstawie danych z ViewModelu.
-        /// </summary>
         private void GenerateGrid()
         {
-            _boardContainer.Clear(); // Wyczyść na wypadek ponownego startu lub zmiany ustawień.
-
+            _boardContainer.Clear();
             _tileElements = new VisualElement[GameBoardViewModel.MaxAttempts][];
             _tileLabels = new Label[GameBoardViewModel.MaxAttempts][];
 
@@ -84,19 +65,16 @@ namespace Yawordle.Presentation.Views
                 
                 var rowElement = new VisualElement();
                 rowElement.AddToClassList("row");
-
                 for (int j = 0; j < _viewModel.WordLength; j++)
                 {
                     var tileElement = new VisualElement();
                     tileElement.AddToClassList("tile");
-                    
                     var labelElement = new Label();
                     labelElement.AddToClassList("tile-label");
                     
                     tileElement.Add(labelElement);
                     rowElement.Add(tileElement);
                     
-                    // Zapisujemy referencje do nowo utworzonych elementów.
                     _tileElements[i][j] = tileElement;
                     _tileLabels[i][j] = labelElement;
                 }
@@ -104,22 +82,57 @@ namespace Yawordle.Presentation.Views
             }
         }
         
-        /// <summary>
-        /// Łączy (binduje) stan ViewModelu z elementami UI.
-        /// Rejestruje nasłuchiwanie na zmiany w każdym TileViewModel.
-        /// </summary>
+        private void GenerateKeyboard()
+        {
+            _keyboardContainer.Clear();
+            _keyButtons.Clear();
+
+            string currentLanguage = _settingsService.CurrentSettings.Language;
+            KeyboardLayout layout = _keyboardLayoutProvider.GetLayoutForLanguage(currentLanguage);
+            
+            foreach (var rowString in layout.KeyRows)
+            {
+                var rowElement = new VisualElement();
+                rowElement.AddToClassList("keyboard-row");
+                foreach (var keyChar in rowString)
+                {
+                    var keyButton = new Button { text = keyChar.ToString() };
+                    keyButton.AddToClassList("key");
+                    keyButton.clicked += () => _viewModel.TypeLetter(keyChar);
+                    rowElement.Add(keyButton);
+                    _keyButtons[keyChar] = keyButton;
+                }
+                _keyboardContainer.Add(rowElement);
+            }
+
+            var bottomRow = new VisualElement();
+            bottomRow.AddToClassList("keyboard-row");
+
+            var enterButton = new Button { text = "ENTER" };
+            enterButton.AddToClassList("key");
+            enterButton.AddToClassList("key--large");
+            enterButton.clicked += _viewModel.SubmitGuess;
+            bottomRow.Add(enterButton);
+
+            var backspaceButton = new Button { text = "⌫" };
+            backspaceButton.AddToClassList("key");
+            backspaceButton.AddToClassList("key--large");
+            backspaceButton.clicked += _viewModel.DeleteLetter;
+            bottomRow.Add(backspaceButton);
+            
+            _keyboardContainer.Add(bottomRow);
+        }
+        
         private void BindToViewModel()
         {
             for (int i = 0; i < GameBoardViewModel.MaxAttempts; i++)
             {
                 for (int j = 0; j < _viewModel.WordLength; j++)
                 {
-                    // Pobieramy konkretny ViewModel i odpowiadające mu elementy UI.
                     TileViewModel tileVM = _viewModel.Tiles[i][j];
                     Label tileLabel = _tileLabels[i][j];
                     VisualElement tileElement = _tileElements[i][j];
 
-                    // Reagujemy na zmiany właściwości w ViewModelu.
                     tileVM.PropertyChanged += (sender, args) =>
                     {
                         var vm = (TileViewModel)sender;
@@ -129,85 +142,86 @@ namespace Yawordle.Presentation.Views
                         }
                         else if (args.PropertyName == nameof(TileViewModel.State))
                         {
-                            UpdateTileState(tileElement, vm.State);
+                            // UWAGA: Już nie zmieniamy stanu bezpośrednio tutaj,
+                            // animacja się tym zajmie. Można to zakomentować lub usunąć.
+                            // UpdateTileState(tileElement, vm.State);
                         }
                     };
                 }
             }
+            
+            // Subskrybuj event do animacji
+            _viewModel.OnRowEvaluatedForAnimation += (rowIndex, states) => AnimateRowAsync(rowIndex, states).Forget();
         }
 
-        /// <summary>
-        /// Aktualizuje klasy USS dla kafelka na podstawie jego nowego stanu.
-        /// </summary>
         private void UpdateTileState(VisualElement tileElement, LetterState state)
         {
-            // Usuń wszystkie stare klasy stanu, aby uniknąć konfliktów.
             tileElement.RemoveFromClassList("tile--correct");
             tileElement.RemoveFromClassList("tile--present");
             tileElement.RemoveFromClassList("tile--absent");
-
             switch (state)
             {
-                case LetterState.Correct:
-                    tileElement.AddToClassList("tile--correct");
-                    break;
-                case LetterState.Present:
-                    tileElement.AddToClassList("tile--present");
-                    break;
-                case LetterState.Absent:
-                    tileElement.AddToClassList("tile--absent");
-                    break;
+                case LetterState.Correct: tileElement.AddToClassList("tile--correct"); break;
+                case LetterState.Present: tileElement.AddToClassList("tile--present"); break;
+                case LetterState.Absent: tileElement.AddToClassList("tile--absent"); break;
             }
         }
+        
+        private async UniTaskVoid AnimateRowAsync(int rowIndex, LetterState[] states)
+        {
+            var sequence = Sequence.Create();
+            for (int i = 0; i < _viewModel.WordLength; i++)
+            {
+                VisualElement tile = _tileElements[rowIndex][i];
+                LetterState state = states[i];
 
-        /// <summary>
-        /// Prosty input z klawiatury PC do celów testowych.
-        /// Przekazuje akcje do ViewModelu.
-        /// </summary>
+                var tweenPart1 = Tween.Custom(
+                    startValue: new Vector2(1, 1),
+                    endValue: new Vector2(0, 1),
+                    duration: 0.25f,
+                    onValueChange: newScale => tile.style.scale = newScale
+                );
+                
+                var tweenPart2 = Tween.Custom(
+                    startValue: new Vector2(0, 1),
+                    endValue: new Vector2(1, 1),
+                    duration: 0.25f,
+                    onValueChange: newScale => tile.style.scale = newScale
+                );
+                
+                var fullTileTween = Sequence.Create()
+                    .Chain(tweenPart1)
+                    .ChainCallback(() => UpdateTileState(tile, state))
+                    .Chain(tweenPart2);
+            
+                sequence = sequence.Chain(fullTileTween);
+            }
+        
+            await sequence;
+        }
+
         private void BindKeyboardInput()
         {
             _boardContainer.RegisterCallback<KeyDownEvent>(evt =>
             {
-                if (char.IsLetter(evt.character))
-                {
-                    _viewModel.TypeLetter(evt.character);
-                }
-                else if (evt.keyCode == KeyCode.Backspace)
-                {
-                    _viewModel.DeleteLetter();
-                }
-                else if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
-                {
-                    _viewModel.SubmitGuess();
-                }
+                if (char.IsLetter(evt.character)) _viewModel.TypeLetter(evt.character);
+                else if (evt.keyCode == KeyCode.Backspace) _viewModel.DeleteLetter();
+                else if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter) _viewModel.SubmitGuess();
             });
         }
         
-        /// <summary>
-        /// Callback wywoływany, gdy geometria kontenera planszy się zmienia.
-        /// Używamy go, aby wymusić kwadratowy kształt kafelków, ustawiając ich wysokość
-        /// na taką samą wartość jak obliczona przez Flexbox szerokość.
-        /// </summary>
         private void OnBoardGeometryChanged(GeometryChangedEvent evt)
         {
-            if (_tileElements == null || _tileElements.Length == 0 || _tileElements[0].Length == 0)
-                return;
-
+            if (_tileElements == null || _tileElements.Length == 0) return;
             var firstTile = _tileElements[0][0];
             if (firstTile == null) return;
-            
             float tileWidth = firstTile.resolvedStyle.width;
             if (tileWidth <= 0) return;
-
-            // Ustaw wysokość wszystkich kafelków na podstawie szerokości pierwszego.
             for (int i = 0; i < GameBoardViewModel.MaxAttempts; i++)
             {
                 for (int j = 0; j < _viewModel.WordLength; j++)
                 {
-                    if (_tileElements[i][j] != null)
-                    {
-                        _tileElements[i][j].style.height = tileWidth;
-                    }
+                    if (_tileElements[i][j] != null) _tileElements[i][j].style.height = tileWidth;
                 }
             }
         }

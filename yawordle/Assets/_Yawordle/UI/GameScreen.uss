@@ -100,9 +100,49 @@
     border-color: var(--color-absent);
 }
 
+/* --- Klawiatura --- */
 .keyboard-container {
     width: 100%;
     max-width: 600px;
     align-items: center;
     margin-top: 20px;
 }
+
+.keyboard-row {
+    flex-direction: row;
+    justify-content: center;
+    width: auto;
+    max-width: 100%;
+    flex-wrap: wrap; 
+    margin-bottom: 5px;
+}
+
+.key {
+    flex-grow: 1;
+    min-width: 30px; /* Minimalna szerokość, żeby klawisze nie zniknęły na wąskich ekranach */
+    height: 50px;
+    background-color: rgb(129, 131, 132);
+    border-radius: 5px;
+    margin: 0 2px;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-text);
+    font-size: 18px;
+    -unity-font-style: bold;
+    -unity-background-image-tint-color: rgb(129, 131, 132); /* Ważne dla zmiany koloru */
+    transition: background-color 0.2s ease;
+}
+
+.key:hover {
+    background-color: rgb(160, 160, 160);
+    -unity-background-image-tint-color: rgb(160, 160, 160);
+}
+
+.key--large {
+    flex-grow: 1.5;
+}
+
+/* Stany klawiszy */
+.key--correct { background-color: var(--color-correct); -unity-background-image-tint-color: var(--color-correct); }
+.key--present { background-color: var(--color-present); -unity-background-image-tint-color: var(--color-present); }
+.key--absent { background-color: var(--color-absent); -unity-background-image-tint-color: var(--color-absent); }
