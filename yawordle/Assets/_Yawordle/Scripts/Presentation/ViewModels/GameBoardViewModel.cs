@@ -1,9 +1,26 @@
+using System;
+using System.ComponentModel;
 using Yawordle.Core;
 
 namespace Yawordle.Presentation.ViewModels
 {
-    public class GameBoardViewModel
+    public class GameBoardViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event Action<int, LetterState[]> OnRowEvaluatedForAnimation;
+
+        private bool _isGameFinished;
+        public bool IsGameFinished
+        {
+            get => _isGameFinished;
+            private set 
+            {
+                if (_isGameFinished == value) return;
+                _isGameFinished = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGameFinished)));
+            }
+        }
+        
         public const int MaxAttempts = 6;
         public TileViewModel[][] Tiles { get; private set; }
         public int WordLength { get; private set; }
@@ -19,6 +36,7 @@ namespace Yawordle.Presentation.ViewModels
             
             _gameManager.OnGuessUpdated += OnGuessUpdated;
             _gameManager.OnGuessEvaluated += OnGuessEvaluated;
+            _gameManager.OnGameFinished += OnGameFinished;
             
             _gameManager.StartNewGame();
         }
@@ -48,11 +66,29 @@ namespace Yawordle.Presentation.ViewModels
             {
                 Tiles[attempt][i].State = states[i];
             }
+            OnRowEvaluatedForAnimation?.Invoke(attempt, states);
+        }
+
+        private void OnGameFinished(bool isWin)
+        {
+            IsGameFinished = true;
+            // TODO: Wywołać event do pokazania pop-upu z wynikiem
         }
         
-        // Komendy wywoływane przez widok
-        public void TypeLetter(char letter) => _gameManager.TypeLetter(letter);
-        public void DeleteLetter() => _gameManager.DeleteLetter();
-        public void SubmitGuess() => _gameManager.SubmitGuess();
+        public void TypeLetter(char letter)
+        {
+            if (IsGameFinished) return;
+            _gameManager.TypeLetter(letter);
+        }
+        public void DeleteLetter()
+        {
+            if (IsGameFinished) return;
+            _gameManager.DeleteLetter();
+        }
+        public void SubmitGuess()
+        {
+            if (IsGameFinished) return;
+            _gameManager.SubmitGuess();
+        }
     }
 }
