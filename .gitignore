@@ -33,8 +33,11 @@ yawordle/[Aa]ssets/Plugins/Editor/JetBrains*
 
 # Visual Studio cache directory
 .vs/
+yawordle/.vscode/
+
 
 # Rider/IntelliJ files
+.idea/
 yawordle/.idea/
 
 # Unity User Settings
