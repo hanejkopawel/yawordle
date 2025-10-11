@@ -1,0 +1,17 @@
+{
+    "name": "Yawordle.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:eb6b4f14a35e048d591f2175b274a6de",
+        "GUID:e332607943c2d2f87b833aac9fab477a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

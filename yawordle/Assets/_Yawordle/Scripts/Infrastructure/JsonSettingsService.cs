@@ -17,14 +17,20 @@ namespace Yawordle.Infrastructure
 
         private void LoadSettings()
         {
-            CurrentSettings = File.Exists(_savePath) 
-                ? JsonUtility.FromJson<GameSettings>(File.ReadAllText(_savePath)) : new GameSettings();
+            if (File.Exists(_savePath))
+                CurrentSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(_savePath));
+            else
+            {
+                CurrentSettings = new GameSettings();
+                SaveSettings(CurrentSettings);
+            }
         }
 
         public void SaveSettings(GameSettings settings)
         {
             CurrentSettings = settings;
             File.WriteAllText(_savePath, JsonUtility.ToJson(CurrentSettings, true));
+            Debug.Log($"Settings saved to: {_savePath}");
         }
     }
 }

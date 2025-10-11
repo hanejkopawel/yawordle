@@ -12,15 +12,12 @@ namespace Yawordle.DI
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<IGameManager, GameManager>(Lifetime.Singleton);
-            
             builder.Register<ISettingsService, JsonSettingsService>(Lifetime.Singleton);
-            
-            // builder.Register<IWordProvider, ResourceWordProvider>(Lifetime.Singleton);
+            builder.Register<IWordProvider, ResourceWordProvider>(Lifetime.Singleton);
             builder.Register<IKeyboardLayoutProvider, KeyboardLayoutProvider>(Lifetime.Singleton);
-
             builder.Register<GameBoardViewModel>(Lifetime.Singleton);
             
-            // As<IStartable>()aby VContainer automatycznie wywołał metodę Start() po utworzeniu wszystkich obiektów.
+            // As<IStartable>() aby VContainer automatycznie wywołał metodę Start() po utworzeniu wszystkich obiektów.
             builder.Register<GameScreenView>(Lifetime.Singleton).As<IStartable>();
         }
     }
