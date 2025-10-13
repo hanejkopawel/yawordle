@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -12,6 +13,8 @@ namespace Yawordle.Presentation.Views
         private readonly UISettings _uiSettings;
 
         private VisualElement _modalContainer;
+        private VisualElement _endGameOverlayInstance;
+        private VisualElement _endGamePanel;
         private Label _resultTitle;
         private Label _infoText;
         private Button _playAgainButton;
@@ -32,22 +35,31 @@ namespace Yawordle.Presentation.Views
                 Debug.LogError("EndGamePanel VisualTreeAsset is not assigned in UISettings.");
                 return;
             }
+            PreparePanel();
 
             _gameBoardViewModel.ShowEndGamePanel += ShowPanel;
         }
 
-        private void ShowPanel(bool isWin, string targetWord)
+        private void PreparePanel()
         {
-            _modalContainer.Clear();
-
-            var endGamePanelInstance = _uiSettings.EndGamePanel.Instantiate();
-            _modalContainer.Add(endGamePanelInstance);
-
-            _resultTitle = endGamePanelInstance.Q<Label>("result-title");
-            _infoText = endGamePanelInstance.Q<Label>("info-text");
-            _playAgainButton = endGamePanelInstance.Q<Button>("play-again-button");
+            _endGameOverlayInstance = _uiSettings.EndGamePanel.Instantiate();
+            _endGameOverlayInstance.style.display = DisplayStyle.None;
+            _modalContainer.Add(_endGameOverlayInstance);
             
+            _endGamePanel = _endGameOverlayInstance.Q<VisualElement>("end-game-panel");
+            _resultTitle = _endGameOverlayInstance.Q<Label>("result-title");
+            _infoText = _endGameOverlayInstance.Q<Label>("info-text");
+            _playAgainButton = _endGameOverlayInstance.Q<Button>("play-again-button");
             _playAgainButton.clicked += PlayAgain;
+
+            _endGameOverlayInstance.style.display = DisplayStyle.None; 
+        }
+
+        private void ShowPanel(bool isWin, string targetWord) => ShowPanelAsync(isWin, targetWord).Forget();
+        
+        
+        private async UniTaskVoid ShowPanelAsync(bool isWin, string targetWord)
+        {
             
             if (isWin)
             {
@@ -59,10 +71,28 @@ namespace Yawordle.Presentation.Views
                 _resultTitle.text = "Game Over";
                 _infoText.text = $"The correct word was: {targetWord.ToUpper()}";
             }
+            
             _modalContainer.style.display = DisplayStyle.Flex;
             _modalContainer.pickingMode = PickingMode.Position;
+            _endGameOverlayInstance.style.display = DisplayStyle.Flex; 
+            
+            await UniTask.Delay(2500); 
+            _endGamePanel.schedule.Execute(() => {
+                _endGamePanel.AddToClassList("settings-panel--is-visible");
+            });
         }
 
-        private static void PlayAgain() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        private void PlayAgain() 
+        {
+            if (_endGamePanel != null)
+            {
+                _endGamePanel.RegisterCallback<TransitionEndEvent>(
+                    evt => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex));
+                _endGamePanel.RemoveFromClassList("settings-panel--is-visible");    
+            }
+            else
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
     }
 }
