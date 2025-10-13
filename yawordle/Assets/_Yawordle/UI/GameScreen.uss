@@ -20,6 +20,10 @@
 .screen-container {
     flex-grow: 1;
     background-color: var(--color-background);
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    position: relative;
 }
 
 .header {
@@ -49,18 +53,16 @@
     border-width: 0;
 }
 
-.main-content {
-    flex-grow: 1;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    display: flex;
-}
-
 .modal-container {
     display: none;
-    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     justify-content: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    
 }
 
 

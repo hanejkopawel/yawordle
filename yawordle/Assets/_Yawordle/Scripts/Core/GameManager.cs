@@ -24,11 +24,11 @@ namespace Yawordle.Core
             _wordProvider = wordProvider;
         }
 
-        public void StartNewGame()
+        public void StartNewGame(string targetWord)
         {
             _currentAttempt = 0;
             _currentGuess = "";
-            _targetWord = _wordProvider.GetRandomSolutionWord();
+            _targetWord = targetWord.ToUpper();
             Debug.Log($"New game started. Word to guess: {_targetWord}");
         }
 
@@ -50,13 +50,11 @@ namespace Yawordle.Core
         {
             if (_currentGuess.Length != _settingsService.CurrentSettings.WordLength)
             {
-                // TODO: Poinformuj gracza, że słowo jest za krótkie
                 return;
             }
 
             if (!_wordProvider.IsValidWord(_currentGuess))
             {
-                // TODO: Notify player that the word is not in the dictionary (e.g., shake animation).
                 Debug.LogWarning($"Invalid word submitted: '{_currentGuess}' is not in the dictionary.");
                 return;
             }
@@ -66,7 +64,7 @@ namespace Yawordle.Core
 
             if (result.All(s => s == LetterState.Correct))
             {
-                OnGameFinished?.Invoke(true); // win
+                OnGameFinished?.Invoke(true);
                 return;
             }
 
@@ -75,37 +73,35 @@ namespace Yawordle.Core
 
             if (_currentAttempt >= MaxAttempts)
             {
-                OnGameFinished?.Invoke(false); // lose
+                OnGameFinished?.Invoke(false);
             }
         }
         
         private LetterState[] EvaluateGuess()
         {
             var result = new LetterState[_targetWord.Length];
+            if (string.IsNullOrEmpty(_targetWord) || _targetWord == "ERROR")
+            {
+                Debug.LogError("Cannot evaluate guess: Target word is invalid.");
+                return result;
+            }
             var targetWordLetters = _targetWord.ToList();
             var guessLetters = _currentGuess.ToList();
-
-            // Krok 1: Znajdź idealne trafienia (Correct)
-            for (int i = 0; i < _targetWord.Length; i++)
+            for (var i = 0; i < _targetWord.Length; i++)
             {
-                if (guessLetters[i] == targetWordLetters[i])
-                {
-                    result[i] = LetterState.Correct;
-                    targetWordLetters[i] = '-'; // Zaznacz jako zużytą
-                    guessLetters[i] = '*';
-                }
+                if (guessLetters[i] != targetWordLetters[i]) continue;
+                result[i] = LetterState.Correct;
+                targetWordLetters[i] = '-';
+                guessLetters[i] = '*';
             }
-
-            // Krok 2: Znajdź litery obecne, ale w złym miejscu (Present)
-            for (int i = 0; i < _targetWord.Length; i++)
+            for (var i = 0; i < _targetWord.Length; i++)
             {
-                if(guessLetters[i] == '*') continue;
-                
-                int index = targetWordLetters.IndexOf(guessLetters[i]);
+                if (guessLetters[i] == '*') continue;
+                var index = targetWordLetters.IndexOf(guessLetters[i]);
                 if (index != -1)
                 {
                     result[i] = LetterState.Present;
-                    targetWordLetters[index] = '-'; // Zaznacz jako zużytą
+                    targetWordLetters[index] = '-';
                 }
                 else
                 {

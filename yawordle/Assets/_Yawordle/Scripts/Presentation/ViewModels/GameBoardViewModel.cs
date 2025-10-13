@@ -10,6 +10,7 @@ namespace Yawordle.Presentation.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<int, LetterState[]> OnRowEvaluatedForAnimation;
+        public event Action<bool, string> ShowEndGamePanel;
 
         private bool _isGameFinished;
         public bool IsGameFinished
@@ -28,12 +29,13 @@ namespace Yawordle.Presentation.ViewModels
         public int WordLength { get; private set; }
         public Dictionary<char, KeyViewModel> Keys { get; } = new();
         private readonly IGameManager _gameManager;
+        private readonly string _targetWord;
 
         public GameBoardViewModel(
             ISettingsService settingsService, 
             IGameManager gameManager, 
-            IKeyboardLayoutProvider keyboardLayoutProvider
-            )
+            IKeyboardLayoutProvider keyboardLayoutProvider,
+            IWordProvider wordProvider)
         {
             _gameManager = gameManager;
             WordLength = settingsService.CurrentSettings.WordLength;
@@ -51,12 +53,17 @@ namespace Yawordle.Presentation.ViewModels
             }
             
             InitializeTiles();
+
+            // Get the word for this session.
+            _targetWord = wordProvider.GetRandomSolutionWord();
             
+            // Subscribe to game logic events.
             _gameManager.OnGuessUpdated += OnGuessUpdated;
             _gameManager.OnGuessEvaluated += OnGuessEvaluated;
             _gameManager.OnGameFinished += OnGameFinished;
             
-            _gameManager.StartNewGame();
+            // Start the game in the GameManager with the chosen word.
+            _gameManager.StartNewGame(_targetWord);
         }
 
         private void InitializeTiles()
@@ -107,7 +114,7 @@ namespace Yawordle.Presentation.ViewModels
         private void OnGameFinished(bool isWin)
         {
             IsGameFinished = true;
-            // TODO: Wywołać event do pokazania pop-upu z wynikiem
+            ShowEndGamePanel?.Invoke(isWin, _targetWord);
         }
         
         public void TypeLetter(char letter)
