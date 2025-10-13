@@ -128,6 +128,20 @@
     border-color: var(--color-absent);
 }
 
+.toast-notification {
+    position: absolute;
+    top: 15%;
+    background-color: var(--color-text);
+    color: var(--color-background);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    -unity-font-style: bold;
+    display: none;
+}
+
+
+
 /* --- Klawiatura --- */
 .keyboard-container {
     width: 100%;

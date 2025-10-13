@@ -6,6 +6,7 @@ namespace Yawordle.Core
 {
     public sealed class GameManager : IGameManager
     {
+        public event Action<GuessValidationError> OnGuessValidationFailed;
         public event Action<int, string> OnGuessUpdated;
         public event Action<int, LetterState[]> OnGuessEvaluated;
         public event Action<bool> OnGameFinished;
@@ -50,12 +51,13 @@ namespace Yawordle.Core
         {
             if (_currentGuess.Length != _settingsService.CurrentSettings.WordLength)
             {
+                OnGuessValidationFailed?.Invoke(GuessValidationError.NotEnoughLetters);
                 return;
             }
 
             if (!_wordProvider.IsValidWord(_currentGuess))
             {
-                Debug.LogWarning($"Invalid word submitted: '{_currentGuess}' is not in the dictionary.");
+                OnGuessValidationFailed?.Invoke(GuessValidationError.NotInWordList);
                 return;
             }
 
