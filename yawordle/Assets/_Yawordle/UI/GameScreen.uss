@@ -46,9 +46,10 @@
     position: absolute;
     left: 10px;
     top: 10px;
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
+    font-size: 46px;
+    color: var(--color-text);
+    width: 60px;
+    height: 60px;
     background-color: transparent;
     border-width: 0;
 }
