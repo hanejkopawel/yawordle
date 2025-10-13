@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,6 +8,7 @@ using Yawordle.Presentation.ViewModels;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using Yawordle.Infrastructure;
+using Object = UnityEngine.Object;
 
 namespace Yawordle.Presentation.Views
 {
@@ -150,6 +152,21 @@ namespace Yawordle.Presentation.Views
                 }
             }
             
+            foreach (var keyVM in _viewModel.Keys.Values)
+            {
+                if (_keyButtons.TryGetValue(keyVM.Key, out var keyButton))
+                {
+                    keyVM.PropertyChanged += (sender, args) =>
+                    {
+                        var changedKeyVM = (KeyViewModel)sender;
+                        if (args.PropertyName == nameof(KeyViewModel.State))
+                        {
+                            UpdateKeyState(keyButton, changedKeyVM.State);
+                        }
+                    };
+                }
+            }
+            
             // Subskrybuj event do animacji
             _viewModel.OnRowEvaluatedForAnimation += (rowIndex, states) => AnimateRowAsync(rowIndex, states).Forget();
         }
@@ -165,6 +182,16 @@ namespace Yawordle.Presentation.Views
                 case LetterState.Present: tileElement.AddToClassList("tile--present"); break;
                 case LetterState.Absent: tileElement.AddToClassList("tile--absent"); break;
             }
+        }
+        
+        /// <summary>
+        /// Adds a new method to update the USS class of a key button.
+        /// </summary>
+        private void UpdateKeyState(Button keyButton, LetterState state)
+        {
+            keyButton.EnableInClassList("key--present", state == LetterState.Present);
+            keyButton.EnableInClassList("key--absent",state == LetterState.Absent);
+            keyButton.EnableInClassList("key--correct",state == LetterState.Correct);
         }
         
         private async UniTaskVoid AnimateRowAsync(int rowIndex, LetterState[] states)
