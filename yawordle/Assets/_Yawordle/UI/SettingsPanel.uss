@@ -1,0 +1,68 @@
+:root {
+    --color-panel-background: rgb(40, 40, 42);
+    --color-secondary-button: rgb(80, 80, 82);
+}
+
+.settings-overlay {
+    flex-grow: 1; 
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.settings-panel {
+    width: 90%;
+    max-width: 500px;
+    background-color: var(--color-panel-background);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.title {
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: white;
+    margin-bottom: 20px;
+    -unity-text-align: middle-center;
+}
+
+.setting-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.setting-label {
+    color: white;
+    font-size: 16px;
+    width: 40%;
+}
+
+.setting-control {
+    width: 60%;
+}
+
+.slider-value-label {
+    color: white;
+    font-size: 16px;
+    margin-left: 10px;
+    min-width: 20px;
+}
+
+.button-row {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.button {
+    font-size: 16px;
+    margin-left: 10px;
+    padding: 8px 16px;
+}
+
+.button--secondary {
+    background-color: var(--color-secondary-button);
+    border-color: var(--color-secondary-button);
+}

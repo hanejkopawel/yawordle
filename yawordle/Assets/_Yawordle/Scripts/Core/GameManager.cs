@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Yawordle.Core
 {
@@ -11,25 +11,25 @@ namespace Yawordle.Core
         public event Action<bool> OnGameFinished;
 
         private readonly ISettingsService _settingsService;
-        // private readonly IWordProvider _wordProvider; // Dodamy później
+        private readonly IWordProvider _wordProvider;
 
         private const int MaxAttempts = 6;
         private int _currentAttempt;
-        private string _targetWord = "UNITY"; // Na razie na sztywno
+        private string _targetWord;
         private string _currentGuess = "";
 
-        public GameManager(ISettingsService settingsService)
+        public GameManager(ISettingsService settingsService, IWordProvider wordProvider)
         {
             _settingsService = settingsService;
+            _wordProvider = wordProvider;
         }
 
         public void StartNewGame()
         {
             _currentAttempt = 0;
             _currentGuess = "";
-            // _targetWord = _wordProvider.GetWord(_settingsService.CurrentSettings.WordLength);
-            // Na razie twardo kodujemy dla testów
-            Console.WriteLine($"New game started. Word to guess: {_targetWord}");
+            _targetWord = _wordProvider.GetRandomSolutionWord();
+            Debug.Log($"New game started. Word to guess: {_targetWord}");
         }
 
         public void TypeLetter(char letter)
@@ -54,18 +54,19 @@ namespace Yawordle.Core
                 return;
             }
 
-            // if (!_wordProvider.IsValidWord(_currentGuess))
-            // {
-            //     // TODO: Poinformuj gracza, że słowa nie ma w słowniku
-            //     return;
-            // }
+            if (!_wordProvider.IsValidWord(_currentGuess))
+            {
+                // TODO: Notify player that the word is not in the dictionary (e.g., shake animation).
+                Debug.LogWarning($"Invalid word submitted: '{_currentGuess}' is not in the dictionary.");
+                return;
+            }
 
             var result = EvaluateGuess();
             OnGuessEvaluated?.Invoke(_currentAttempt, result);
 
             if (result.All(s => s == LetterState.Correct))
             {
-                OnGameFinished?.Invoke(true); // Wygrana
+                OnGameFinished?.Invoke(true); // win
                 return;
             }
 
@@ -74,7 +75,7 @@ namespace Yawordle.Core
 
             if (_currentAttempt >= MaxAttempts)
             {
-                OnGameFinished?.Invoke(false); // Przegrana
+                OnGameFinished?.Invoke(false); // lose
             }
         }
         

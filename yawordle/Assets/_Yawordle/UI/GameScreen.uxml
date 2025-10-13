@@ -9,39 +9,18 @@
     
     <ui:Style src="GameScreen.uss" />
     
-    <!-- 
-        Główny kontener, który zajmuje cały ekran.
-        Używa Flexboxa do wyśrodkowania zawartości.
-    -->
     <ui:VisualElement name="screen-container" class="screen-container">
-        
-        <!-- 
-            Nagłówek gry.
-        -->
-        <ui:VisualElement name="header" class="header">
-            <ui:Label text="YAWORDLE" class="title" />
+        <ui:VisualElement name="main-content" class="main-content">
+            <ui:VisualElement name="header" class="header">
+                <ui:Button name="settings-button" text="⚙️" class="icon-button" />
+                <ui:Label text="YAWORDLE" class="title" />
+            </ui:VisualElement>
+            <ui:VisualElement name="game-area" class="game-area">
+                <ui:VisualElement name="game-board-container" class="game-board-container" />
+            </ui:VisualElement>
+            <ui:VisualElement name="keyboard-container" class="keyboard-container" />
         </ui:VisualElement>
-        
-        <!-- 
-            Główny obszar gry. Oddzielamy go, aby plansza
-            i klawiatura mogły się skalować niezależnie.
-        -->
-        <ui:VisualElement name="game-area" class="game-area">
-            
-            <!-- 
-                Ten kontener będzie dynamicznie wypełniany
-                rzędami i kafelkami przez skrypt C#.
-            -->
-            <ui:VisualElement name="game-board-container" class="game-board-container" />
-
-        </ui:VisualElement>
-        
-        <!-- 
-            Kontener na wirtualną klawiaturę.
-            Również będzie generowana dynamicznie.
-        -->
-        <ui:VisualElement name="keyboard-container" class="keyboard-container" />
-
+        <ui:VisualElement name="modal-container" class="modal-container" />
     </ui:VisualElement>
     
 </ui:UXML>

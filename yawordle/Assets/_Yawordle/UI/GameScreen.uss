@@ -18,17 +18,16 @@
 
 /* --- Style Podstawowe --- */
 .screen-container {
-    flex-grow: 1; /* Pozwól kontenerowi zająć całą dostępną przestrzeń */
+    flex-grow: 1;
     background-color: var(--color-background);
-    align-items: center; /* Wyśrodkuj elementy w poziomie */
-    justify-content: space-between; /* Rozłóż nagłówek, planszę i klawiaturę w pionie */
-    padding: 10px;
 }
 
 .header {
     width: 100%;
-    align-items: center;
+    align-items: center; 
+    justify-content: center;
     margin-bottom: 20px;
+    position: relative; 
 }
 
 .title {
@@ -36,13 +35,41 @@
     -unity-font-style: bold;
     color: var(--color-text);
     letter-spacing: 2px;
+    -unity-text-align: middle-center;
 }
+
+.icon-button {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border-width: 0;
+}
+
+.main-content {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    display: flex;
+}
+
+.modal-container {
+    display: none;
+    flex-grow: 1;
+    justify-content: center;
+}
+
 
 .game-area {
     flex-grow: 1;
     width: 100%;
-    justify-content: center; /* Wyśrodkuj planszę w pionie w dostępnym miejscu */
+    justify-content: center;
     align-items: center;
+  
 }
 
 /* --- Plansza i Kafelki --- */
@@ -50,8 +77,6 @@
     width: 100%;
     max-width: 450px;
     height: auto;
-    justify-content: center;
-    align-items: center;
 }
 
 .row {
