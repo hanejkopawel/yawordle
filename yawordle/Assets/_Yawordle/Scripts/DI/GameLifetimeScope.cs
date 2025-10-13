@@ -31,6 +31,7 @@ namespace Yawordle.DI
             // As<IStartable>() aby VContainer automatycznie wywołał metodę Start() po utworzeniu wszystkich obiektów.
             builder.Register<GameScreenView>(Lifetime.Singleton).As<IStartable>();
             builder.Register<SettingsView>(Lifetime.Singleton).As<IStartable>();
+            builder.Register<EndGameView>(Lifetime.Singleton).As<IStartable>();
 
         }
     }

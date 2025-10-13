@@ -3,13 +3,7 @@
     --color-secondary-button: rgb(80, 80, 82);
 }
 
-.settings-overlay {
-    flex-grow: 1; 
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-}
+
 
 .settings-panel {
     width: 90%;
@@ -17,6 +11,8 @@
     background-color: var(--color-panel-background);
     border-radius: 10px;
     padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .title {
@@ -36,11 +32,11 @@
 .setting-label {
     color: white;
     font-size: 16px;
-    width: 40%;
+    margin-right: 15px;
 }
 
 .setting-control {
-    width: 60%;
+    flex-grow: 1;
 }
 
 .slider-value-label {
@@ -65,4 +61,12 @@
 .button--secondary {
     background-color: var(--color-secondary-button);
     border-color: var(--color-secondary-button);
+}
+
+.info-text {
+    font-size: 18px;
+    color: white;
+    -unity-text-align: middle-center;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }

@@ -11,7 +11,7 @@ namespace Yawordle.Presentation
     public class UISettings : ScriptableObject
     {
         [field:SerializeField] public VisualTreeAsset SettingsPanel { get; set; }
-        // public VisualTreeAsset WinPanel { get; set; }
-        // public VisualTreeAsset LosePanel { get; set; }
+        [field:SerializeField] public VisualTreeAsset EndGamePanel { get; set; }
+
     }
 }
