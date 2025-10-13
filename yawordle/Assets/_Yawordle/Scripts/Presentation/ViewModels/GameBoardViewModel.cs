@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Yawordle.Core;
+using Yawordle.Infrastructure;
 
 namespace Yawordle.Presentation.ViewModels
 {
@@ -24,14 +26,30 @@ namespace Yawordle.Presentation.ViewModels
         public const int MaxAttempts = 6;
         public TileViewModel[][] Tiles { get; private set; }
         public int WordLength { get; private set; }
-
+        public Dictionary<char, KeyViewModel> Keys { get; } = new();
         private readonly IGameManager _gameManager;
 
-        public GameBoardViewModel(ISettingsService settingsService, IGameManager gameManager)
+        public GameBoardViewModel(
+            ISettingsService settingsService, 
+            IGameManager gameManager, 
+            IKeyboardLayoutProvider keyboardLayoutProvider
+            )
         {
             _gameManager = gameManager;
-
             WordLength = settingsService.CurrentSettings.WordLength;
+            
+            var layout = keyboardLayoutProvider.GetLayoutForLanguage(settingsService.CurrentSettings.Language);
+            foreach (var row in layout.KeyRows)
+            {
+                foreach (var key in row)
+                {
+                    if (!Keys.ContainsKey(key))
+                    {
+                        Keys.Add(key, new KeyViewModel(key));
+                    }
+                }
+            }
+            
             InitializeTiles();
             
             _gameManager.OnGuessUpdated += OnGuessUpdated;
@@ -67,6 +85,23 @@ namespace Yawordle.Presentation.ViewModels
                 Tiles[attempt][i].State = states[i];
             }
             OnRowEvaluatedForAnimation?.Invoke(attempt, states);
+            
+            string currentGuess = ""; 
+            foreach (var tileVM in Tiles[attempt])
+            {
+                currentGuess += tileVM.Letter;
+            }
+            currentGuess = currentGuess.Trim();
+
+            for (int i = 0; i < currentGuess.Length; i++)
+            {
+                char letter = currentGuess[i];
+                LetterState state = states[i];
+                if (Keys.TryGetValue(letter, out var keyVM))
+                {
+                    keyVM.State = state;
+                }
+            }
         }
 
         private void OnGameFinished(bool isWin)
