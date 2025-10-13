@@ -2,7 +2,10 @@
     "name": "Yawordle.Infrastructure",
     "rootNamespace": "Yawordle.Infrastructure",
     "references": [
-        "GUID:eb6b4f14a35e048d591f2175b274a6de"
+        "GUID:eb6b4f14a35e048d591f2175b274a6de",
+        "GUID:facd7b3fbff253e06a44748b8f4ae19a",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
