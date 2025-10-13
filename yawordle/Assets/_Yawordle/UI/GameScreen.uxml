@@ -19,6 +19,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="keyboard-container" class="keyboard-container" />
         <ui:VisualElement name="modal-container" class="modal-container" picking-mode="Ignore"/>
+        <ui:Label name="toast-notification" class="toast-notification" picking-mode="Ignore"/>
     </ui:VisualElement>
     
 </ui:UXML>

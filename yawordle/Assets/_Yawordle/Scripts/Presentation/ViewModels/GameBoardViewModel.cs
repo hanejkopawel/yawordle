@@ -8,6 +8,7 @@ namespace Yawordle.Presentation.ViewModels
 {
     public class GameBoardViewModel : INotifyPropertyChanged
     {
+        public event Action<GuessValidationError, int> OnInvalidGuess;
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action<int, LetterState[]> OnRowEvaluatedForAnimation;
         public event Action<bool, string> ShowEndGamePanel;
@@ -30,6 +31,7 @@ namespace Yawordle.Presentation.ViewModels
         public Dictionary<char, KeyViewModel> Keys { get; } = new();
         private readonly IGameManager _gameManager;
         private readonly string _targetWord;
+        private int _currentAttempt;
 
         public GameBoardViewModel(
             ISettingsService settingsService, 
@@ -58,6 +60,7 @@ namespace Yawordle.Presentation.ViewModels
             _targetWord = wordProvider.GetRandomSolutionWord();
             
             // Subscribe to game logic events.
+            _gameManager.OnGuessValidationFailed += OnGuessValidationFailed;
             _gameManager.OnGuessUpdated += OnGuessUpdated;
             _gameManager.OnGuessEvaluated += OnGuessEvaluated;
             _gameManager.OnGameFinished += OnGameFinished;
@@ -77,6 +80,11 @@ namespace Yawordle.Presentation.ViewModels
             }
         }
 
+        private void OnGuessValidationFailed(GuessValidationError error)
+        {
+            OnInvalidGuess?.Invoke(error, _currentAttempt);
+        }
+        
         private void OnGuessUpdated(int attempt, string guess)
         {
             for (int i = 0; i < WordLength; i++)
@@ -87,10 +95,14 @@ namespace Yawordle.Presentation.ViewModels
         
         private void OnGuessEvaluated(int attempt, LetterState[] states)
         {
+            
+            _currentAttempt = attempt + 1;
+            
             for (int i = 0; i < WordLength; i++)
             {
                 Tiles[attempt][i].State = states[i];
             }
+            
             OnRowEvaluatedForAnimation?.Invoke(attempt, states);
             
             string currentGuess = ""; 

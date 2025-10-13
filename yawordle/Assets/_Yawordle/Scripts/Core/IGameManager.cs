@@ -4,6 +4,7 @@ namespace Yawordle.Core
 {
     public interface IGameManager
     {
+        event Action<GuessValidationError> OnGuessValidationFailed;
         event Action<int, string> OnGuessUpdated;
         event Action<int, LetterState[]> OnGuessEvaluated;
         event Action<bool> OnGameFinished; // bool: isWin

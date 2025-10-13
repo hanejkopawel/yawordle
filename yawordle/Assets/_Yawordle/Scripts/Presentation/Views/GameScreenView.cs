@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -23,6 +22,10 @@ namespace Yawordle.Presentation.Views
         private Label[][] _tileLabels;
         private VisualElement _keyboardContainer;
         private readonly Dictionary<char, Button> _keyButtons = new();
+        
+        private Label _toastNotification; 
+        private Sequence _currentToastSequence;
+        private Tween _currentShakeAnimation;
 
         public GameScreenView(
             GameBoardViewModel viewModel, 
@@ -44,7 +47,7 @@ namespace Yawordle.Presentation.Views
             _boardContainer.Focus();
             
             _keyboardContainer = root.Q<VisualElement>("keyboard-container");
-
+            _toastNotification = root.Q<Label>("toast-notification");
 
             GenerateGrid();
             GenerateKeyboard();
@@ -169,6 +172,7 @@ namespace Yawordle.Presentation.Views
             
             // Subskrybuj event do animacji
             _viewModel.OnRowEvaluatedForAnimation += (rowIndex, states) => AnimateRowAsync(rowIndex, states).Forget();
+            _viewModel.OnInvalidGuess += OnInvalidGuess;
         }
 
         private void UpdateTileState(VisualElement tileElement, LetterState state)
@@ -225,6 +229,94 @@ namespace Yawordle.Presentation.Views
             }
         
             await sequence;
+        }
+        
+        private void OnInvalidGuess(GuessValidationError error, int attemptIndex)
+        {
+            ShakeRow(attemptIndex);
+
+            string message = error switch
+            {
+                GuessValidationError.NotEnoughLetters => "Not enough letters",
+                GuessValidationError.NotInWordList => "Not in word list",
+                _ => "Unknown error"
+            };
+            ShowToast(message);
+        }
+        
+        private void ShakeRow(int rowIndex)
+        {
+            if (rowIndex >= _tileElements.Length || _tileElements[rowIndex].Length == 0) return;
+
+            _currentShakeAnimation.Stop();
+
+            var rowToShake = _tileElements[rowIndex][0].parent;
+            
+            const float shakeStrength = 10f; 
+            const float shakeDuration = 0.4f;
+
+            _currentShakeAnimation = Tween.Custom(
+                target: rowToShake,
+                startValue: 0f,
+                endValue: 1f,
+                duration: shakeDuration,
+                onValueChange: (target, progress) =>
+                {
+                    float strength = shakeStrength * (1 - progress);
+                    float xOffset = Mathf.Sin(progress * 10 * Mathf.PI * 2) * strength;
+                    target.style.translate = new Vector2(xOffset, 0);
+                }
+            ).OnComplete(rowToShake, (target) => target.style.translate = Vector2.zero);
+        }
+
+        private void ShowToast(string message)
+        {
+            _currentToastSequence.Stop();
+            
+            _toastNotification.text = message;
+
+            const float fadeInDuration = 0.25f;
+            const float fadeOutDuration = 0.3f;
+            const float visibleDuration = 1.5f;
+
+            
+            _currentToastSequence = Sequence.Create()
+                .ChainCallback(() => {
+                    _toastNotification.style.opacity = 0;
+                    _toastNotification.style.scale = new Vector3(0.9f, 0.9f, 1f);
+                    _toastNotification.style.display = DisplayStyle.Flex;
+                })
+                .Chain(Tween.Custom(
+                    startValue: 0.9f, 
+                    endValue: 1f, 
+                    duration: fadeInDuration, 
+                    ease: Ease.OutQuad, 
+                    onValueChange: newScale => _toastNotification.style.scale = new Vector3(newScale, newScale, 1f)
+                ))
+                .Group(Tween.Custom(
+                    startValue: 0f, 
+                    endValue: 1f, 
+                    duration: fadeInDuration, 
+                    onValueChange: newOpacity => _toastNotification.style.opacity = newOpacity
+                ))
+                .ChainDelay(visibleDuration)
+                .Chain(Tween.Custom(
+                    startValue: 1f, 
+                    endValue: 0.9f, 
+                    duration: fadeOutDuration, 
+                    ease: Ease.InQuad, 
+                    onValueChange: newScale => _toastNotification.style.scale = new Vector3(newScale, newScale, 1f)
+                ))
+                .Group(Tween.Custom(
+                    startValue: 1f, 
+                    endValue: 0f, 
+                    duration: fadeOutDuration, 
+                    onValueChange: newOpacity => _toastNotification.style.opacity = newOpacity
+                ))
+                .OnComplete(() => {
+                    _toastNotification.style.display = DisplayStyle.None;
+                });
+
         }
 
         private void BindKeyboardInput()
