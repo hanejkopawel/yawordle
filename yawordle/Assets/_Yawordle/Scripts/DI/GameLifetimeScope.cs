@@ -15,20 +15,30 @@ namespace Yawordle.DI
         
         protected override void Configure(IContainerBuilder builder)
         {
+            
+            // --- Core Services (Models) ---
+            // Register game logic services. VContainer will automatically resolve their dependencies.
             builder.Register<IGameManager, GameManager>(Lifetime.Singleton);
             builder.Register<ISettingsService, JsonSettingsService>(Lifetime.Singleton);
             builder.Register<IWordProvider, ResourceWordProvider>(Lifetime.Singleton);
-            builder.Register<IKeyboardLayoutProvider, KeyboardLayoutProvider>(Lifetime.Singleton);
             
+            // --- Infrastructure Services ---
+            // Services that interact with external systems (UI, backend, file system).
+            builder.Register<IKeyboardLayoutProvider, KeyboardLayoutProvider>(Lifetime.Singleton);
+            builder.Register<IUgsService, UgsService>(Lifetime.Singleton);
             builder.RegisterInstance(uiSettings);
             
+            // --- ViewModels ---
             builder.Register<GameBoardViewModel>(Lifetime.Singleton);
-            // Register SettingsViewModel with a Transient lifetime,
-            // so a new instance is created every time it's requested.
+            // SettingsViewModel is created on-demand each time the settings panel is opened.
             builder.Register<SettingsViewModel>(Lifetime.Transient);
-
             
-            // As<IStartable>() aby VContainer automatycznie wywołał metodę Start() po utworzeniu wszystkich obiektów.
+            // --- Application Entry Point ---
+            // It's responsible for the initial asynchronous setup, like fetching the word of the day.
+            builder.Register<GameInitializer>(Lifetime.Singleton).As<IAsyncStartable>();
+
+            // --- Views ---
+            // Views are registered as IStartable to be initialized after all dependencies are built.
             builder.Register<GameScreenView>(Lifetime.Singleton).As<IStartable>();
             builder.Register<SettingsView>(Lifetime.Singleton).As<IStartable>();
             builder.Register<EndGameView>(Lifetime.Singleton).As<IStartable>();

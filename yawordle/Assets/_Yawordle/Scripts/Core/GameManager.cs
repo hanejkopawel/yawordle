@@ -11,6 +11,8 @@ namespace Yawordle.Core
         public event Action<int, LetterState[]> OnGuessEvaluated;
         public event Action<bool> OnGameFinished;
 
+        public string TargetWord => _targetWord;
+        
         private readonly ISettingsService _settingsService;
         private readonly IWordProvider _wordProvider;
 
