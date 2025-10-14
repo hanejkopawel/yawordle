@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Yawordle.Core;
 
@@ -19,10 +20,12 @@ namespace Yawordle.Infrastructure
         private readonly Dictionary<string, HashSet<string>> _validWordsCache = new();
 
         private readonly ISettingsService _settingsService;
+        private readonly IUgsService _ugsService;
 
-        public ResourceWordProvider(ISettingsService settingsService)
+        public ResourceWordProvider(ISettingsService settingsService, IUgsService ugsService)
         {
             _settingsService = settingsService;
+            _ugsService = ugsService;
         }
 
         public string GetRandomSolutionWord()
@@ -54,6 +57,12 @@ namespace Yawordle.Infrastructure
             
             string cacheKey = $"{language}_{length}";
             return _validWordsCache.TryGetValue(cacheKey, out var wordSet) && wordSet.Contains(word.ToUpper());
+        }
+        
+        public async UniTask<string> GetWordOfTheDayAsync()
+        {
+            var settings = _settingsService.CurrentSettings;
+            return await _ugsService.GetWordOfTheDayAsync(settings.Language, settings.WordLength);
         }
 
         /// <summary>

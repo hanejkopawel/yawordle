@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 using VContainer.Unity;
+using Yawordle.Core;
 using Yawordle.Presentation.ViewModels;
 
 namespace Yawordle.Presentation.Views
@@ -21,6 +22,7 @@ namespace Yawordle.Presentation.Views
         private VisualElement _settingsOverlayInstance;
         private VisualElement _settingsPanel;
         private DropdownField _languageDropdown;
+        private DropdownField _gameModeDropdown;
         private SliderInt _wordLengthSlider;
         private Label _wordLengthValueLabel;
         private Button _saveButton;
@@ -56,6 +58,7 @@ namespace Yawordle.Presentation.Views
             // Find controls once and store their references.
             _settingsPanel = _settingsOverlayInstance.Q<VisualElement>("settings-panel");
             _languageDropdown = _settingsOverlayInstance.Q<DropdownField>("language-dropdown");
+            _gameModeDropdown = _settingsOverlayInstance.Q<DropdownField>("game-mode-dropdown");
             _wordLengthSlider = _settingsOverlayInstance.Q<SliderInt>("word-length-slider");
             _wordLengthValueLabel = _settingsOverlayInstance.Q<Label>("word-length-value-label");
             _saveButton = _settingsOverlayInstance.Q<Button>("save-button");
@@ -65,6 +68,13 @@ namespace Yawordle.Presentation.Views
         }
 
         private void OnLanguageChanged(ChangeEvent<string> evt) => _viewModel.SetLanguage(evt.newValue);
+        private void OnGameModeChanged(ChangeEvent<string> evt)
+        {
+            if (System.Enum.TryParse<GameMode>(evt.newValue, out var newMode))
+            {
+                _viewModel.SetGameMode(newMode);
+            }
+        }
         private void OnWordLengthChanged(ChangeEvent<int> evt)
         {
             _viewModel.SetWordLength(evt.newValue);
@@ -82,12 +92,17 @@ namespace Yawordle.Presentation.Views
             // Populate controls with current data from the ViewModel.
             _languageDropdown.choices = new List<string> { "en", "pl" };
             _languageDropdown.value = _viewModel.TempSettings.Language;
+            
+            _gameModeDropdown.choices = new List<string> { "Unlimited", "Daily" };
+            _gameModeDropdown.value = _viewModel.TempSettings.Mode.ToString();
+            
             _wordLengthSlider.value = _viewModel.TempSettings.WordLength;
             _wordLengthValueLabel.text = _viewModel.TempSettings.WordLength.ToString();
 
             // Register callbacks for UI controls.
-            _languageDropdown.RegisterValueChangedCallback<string>(OnLanguageChanged);
-            _wordLengthSlider.RegisterValueChangedCallback<int>(OnWordLengthChanged);
+            _languageDropdown.RegisterValueChangedCallback(OnLanguageChanged);
+            _gameModeDropdown.RegisterValueChangedCallback(OnGameModeChanged);
+            _wordLengthSlider.RegisterValueChangedCallback(OnWordLengthChanged);
             _saveButton.clicked += OnSaveAndRestart;
             
             // Show the panel by switching the main containers' visibility.
@@ -100,8 +115,9 @@ namespace Yawordle.Presentation.Views
         private void ClosePanel()
         {
             // Unregister callbacks to prevent them from firing when the panel is hidden.
-            _languageDropdown.UnregisterValueChangedCallback<string>(OnLanguageChanged);
-            _wordLengthSlider.UnregisterValueChangedCallback<int>(OnWordLengthChanged);
+            _languageDropdown.UnregisterValueChangedCallback(OnLanguageChanged);
+            _gameModeDropdown.UnregisterValueChangedCallback(OnGameModeChanged);
+            _wordLengthSlider.UnregisterValueChangedCallback(OnWordLengthChanged);
             _saveButton.clicked -= OnSaveAndRestart;
             
             _settingsPanel.RemoveFromClassList("settings-panel--is-visible");

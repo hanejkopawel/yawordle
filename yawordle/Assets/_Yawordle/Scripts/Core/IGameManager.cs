@@ -9,6 +9,7 @@ namespace Yawordle.Core
         event Action<int, LetterState[]> OnGuessEvaluated;
         event Action<bool> OnGameFinished; // bool: isWin
 
+        string TargetWord { get; }
         void StartNewGame(string targetWord);
         void TypeLetter(char letter);
         void DeleteLetter();

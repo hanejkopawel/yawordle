@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 using Yawordle.Core;
 using Yawordle.Infrastructure;
 
@@ -30,18 +32,24 @@ namespace Yawordle.Presentation.ViewModels
         public int WordLength { get; private set; }
         public Dictionary<char, KeyViewModel> Keys { get; } = new();
         private readonly IGameManager _gameManager;
-        private readonly string _targetWord;
         private int _currentAttempt;
 
-        public GameBoardViewModel(
-            ISettingsService settingsService, 
-            IGameManager gameManager, 
-            IKeyboardLayoutProvider keyboardLayoutProvider,
-            IWordProvider wordProvider)
+
+        public GameBoardViewModel(ISettingsService settingsService, IGameManager gameManager, IKeyboardLayoutProvider keyboardLayoutProvider)
         {
             _gameManager = gameManager;
             WordLength = settingsService.CurrentSettings.WordLength;
-            
+            InitializeTiles();
+            InitializeKeys(settingsService, keyboardLayoutProvider);
+            // Subscribe to game logic events.
+            _gameManager.OnGuessValidationFailed += OnGuessValidationFailed;
+            _gameManager.OnGuessUpdated += OnGuessUpdated;
+            _gameManager.OnGuessEvaluated += OnGuessEvaluated;
+            _gameManager.OnGameFinished += OnGameFinished;
+        }
+
+        private void InitializeKeys(ISettingsService settingsService, IKeyboardLayoutProvider keyboardLayoutProvider)
+        {
             var layout = keyboardLayoutProvider.GetLayoutForLanguage(settingsService.CurrentSettings.Language);
             foreach (var row in layout.KeyRows)
             {
@@ -53,20 +61,6 @@ namespace Yawordle.Presentation.ViewModels
                     }
                 }
             }
-            
-            InitializeTiles();
-
-            // Get the word for this session.
-            _targetWord = wordProvider.GetRandomSolutionWord();
-            
-            // Subscribe to game logic events.
-            _gameManager.OnGuessValidationFailed += OnGuessValidationFailed;
-            _gameManager.OnGuessUpdated += OnGuessUpdated;
-            _gameManager.OnGuessEvaluated += OnGuessEvaluated;
-            _gameManager.OnGameFinished += OnGameFinished;
-            
-            // Start the game in the GameManager with the chosen word.
-            _gameManager.StartNewGame(_targetWord);
         }
 
         private void InitializeTiles()
@@ -79,7 +73,7 @@ namespace Yawordle.Presentation.ViewModels
                     Tiles[i][j] = new TileViewModel();
             }
         }
-
+        
         private void OnGuessValidationFailed(GuessValidationError error)
         {
             OnInvalidGuess?.Invoke(error, _currentAttempt);
@@ -126,7 +120,7 @@ namespace Yawordle.Presentation.ViewModels
         private void OnGameFinished(bool isWin)
         {
             IsGameFinished = true;
-            ShowEndGamePanel?.Invoke(isWin, _targetWord);
+            ShowEndGamePanel?.Invoke(isWin, _gameManager.TargetWord);
         }
         
         public void TypeLetter(char letter)

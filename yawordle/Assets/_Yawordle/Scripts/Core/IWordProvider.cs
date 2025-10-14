@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+
 namespace Yawordle.Core
 {
     /// <summary>
@@ -15,5 +17,7 @@ namespace Yawordle.Core
         /// Checks if a given word exists in the valid words dictionary for the current settings.
         /// </summary>
         bool IsValidWord(string word);
+        
+        UniTask<string> GetWordOfTheDayAsync();
     }
 }

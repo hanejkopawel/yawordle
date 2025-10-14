@@ -24,6 +24,7 @@ namespace Yawordle.Presentation.ViewModels
         }
 
         public void SetLanguage(string language) => TempSettings.Language = language;
+        public void SetGameMode(GameMode mode) => TempSettings.Mode = mode;
         public void SetWordLength(int length) => TempSettings.WordLength = length;
 
         

@@ -20,6 +20,12 @@
             <ui:DropdownField name="language-dropdown" class="setting-control" />
         </ui:VisualElement>
 
+        <!-- Sekcja trybu gry -->
+        <ui:VisualElement class="setting-row">
+            <ui:Label text="Game Mode" class="setting-label" />
+            <ui:DropdownField name="game-mode-dropdown" class="setting-control" />
+        </ui:VisualElement>
+        
         <!-- Sekcja wyboru długości słowa -->
         <ui:VisualElement class="setting-row">
             <ui:Label text="Word Length (Difficulty)" class="setting-label" />
