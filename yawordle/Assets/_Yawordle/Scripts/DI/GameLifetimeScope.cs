@@ -39,6 +39,7 @@ namespace Yawordle.DI
 
             // --- Views ---
             // Views are registered as IStartable to be initialized after all dependencies are built.
+            builder.Register<InstructionsView>(Lifetime.Singleton).As<IStartable>();
             builder.Register<GameScreenView>(Lifetime.Singleton).As<IStartable>();
             builder.Register<SettingsView>(Lifetime.Singleton).As<IStartable>();
             builder.Register<EndGameView>(Lifetime.Singleton).As<IStartable>();

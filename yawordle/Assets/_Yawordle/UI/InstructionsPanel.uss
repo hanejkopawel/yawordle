@@ -1,0 +1,113 @@
+:root {
+    --color-text-primary: rgb(248, 248, 248);
+    --color-text-secondary: rgb(211, 211, 211);
+}
+
+/* --- Style Współdzielone --- */
+.settings-panel {
+    width: 90%;
+    max-width: 500px;
+    background-color: var(--color-panel-background, rgb(40, 40, 42));
+    border-radius: 10px;
+    padding: 20px;
+    margin: auto;
+    display: none;
+
+    transition-property: opacity, scale, translate;
+    transition-duration: 0.25s, 0.3s, 0.3s;
+    transition-timing-function: ease-out;
+    opacity: 0;
+    scale: 0.95;
+    translate: 0 30px;
+}
+.settings-panel--is-visible {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+    display: flex;
+}
+.button {
+    font-size: 16px;
+    margin-top: 20px;
+    align-self: center;
+}
+
+/* --- Style Specyficzne dla Panelu Instrukcji --- */
+.title, .subtitle {
+    color: var(--color-text-primary);
+    -unity-font-style: bold;
+}
+.title {
+    font-size: 28px;
+    margin-bottom: 10px;
+    -unity-text-align: middle-center;
+}
+.subtitle {
+    font-size: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-bottom-width: 1px;
+    border-bottom-color: grey;
+    padding-bottom: 5px;
+}
+
+/* Ogólny opis na górze */
+.description {
+    color: var(--color-text-secondary);
+    font-size: 16px;
+    white-space: normal;
+    margin-bottom: 15px;
+    -unity-text-align: middle-center;
+}
+/* Zasady z kropkami */
+.rule Label {
+    color: var(--color-text-primary);
+    font-size: 16px;
+    white-space: normal;
+}
+.rule {
+    margin-left: 10px;
+    margin-bottom: 5px;
+}
+/* Opisy pod przykładami */
+.example-description {
+    color: var(--color-text-secondary);
+    font-size: 14px; 
+    white-space: normal;
+    margin-bottom: 20px;
+}
+
+.example-row {
+    flex-direction: row;
+    margin-bottom: 5px;
+}
+
+.example-tile {
+    width: 40px;
+    height: 40px;
+    color: var(--color-text-primary);
+    -unity-font-style: bold;
+    font-size: 24px;
+    -unity-text-align: middle-center;
+    margin-right: 5px;
+
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-color: var(--color-tile-border-idle, rgb(58, 58, 60));
+}
+
+.example-tile--correct, .example-tile--present, .example-tile--absent {
+    border-color: transparent;
+}
+
+.example-tile--correct {
+    background-color: var(--color-correct, #538d4e);
+}
+.example-tile--present {
+    background-color: var(--color-present, #b59f3b);
+}
+.example-tile--absent {
+    background-color: var(--color-absent, #3a3a3c);
+}

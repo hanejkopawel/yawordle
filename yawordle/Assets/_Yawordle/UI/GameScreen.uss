@@ -54,6 +54,11 @@
     border-width: 0;
 }
 
+.icon-button--right {
+    left: auto; 
+    right: 10px;
+}
+
 .modal-container {
     display: none;
     position: absolute;
