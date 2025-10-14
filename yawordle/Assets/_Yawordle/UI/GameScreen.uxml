@@ -12,6 +12,7 @@
     <ui:VisualElement name="screen-container" class="screen-container">
         <ui:VisualElement name="header" class="header">
             <ui:Button name="settings-button" text="⚙️" class="icon-button" />
+            <ui:Button name="help-button" text="❓" class="icon-button icon-button--right" />
             <ui:Label text="YAWORDLE" class="title" />
         </ui:VisualElement>
         <ui:VisualElement name="game-area" class="game-area">

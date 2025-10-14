@@ -12,6 +12,7 @@ namespace Yawordle.Presentation
     {
         [field:SerializeField] public VisualTreeAsset SettingsPanel { get; set; }
         [field:SerializeField] public VisualTreeAsset EndGamePanel { get; set; }
+        [field:SerializeField] public VisualTreeAsset InstructionsPanel { get; set; }
 
     }
 }
