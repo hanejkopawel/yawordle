@@ -68,4 +68,4 @@ This project is a solid foundation that can be extended with more features:
 
 ---
 
-*This project was created by [Your Name/Handle] as a portfolio piece. Feel free to browse the code to see the architecture and implementation details.*
+*This project was created by Paweł Hanejko. Feel free to browse the code to see the architecture and implementation details.*
