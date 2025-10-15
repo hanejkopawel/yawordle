@@ -1,37 +1,35 @@
+/* GameScreen.uss */
 /* --- Zmienne Globalne (Paleta Kolorów i Rozmiary) --- */
 :root {
-    /* Paleta kolorów */
     --color-background: rgb(18, 18, 19);
     --color-text: white;
     --color-tile-border-idle: rgb(58, 58, 60);
     --color-tile-border-active: rgb(86, 87, 88);
-
-    /* Kolory stanu liter */
     --color-correct: #538d4e;
     --color-present: #b59f3b;
     --color-absent: #3a3a3c;
-
-    /* Czcionki */
-    --font-size-title: 36px;
+    --font-size-title: 32px;
     --font-size-tile: 32px;
+    --font-size-key: 16px;
 }
 
 /* --- Style Podstawowe --- */
 .screen-container {
     flex-grow: 1;
     background-color: var(--color-background);
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
+    flex-direction: column;
     position: relative;
+    padding: 30px;
 }
 
+/* --- Header --- */
 .header {
     width: 100%;
-    align-items: center; 
+    height: 60px;
+    flex-shrink: 0;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    position: relative; 
+    position: relative;
 }
 
 .title {
@@ -44,21 +42,24 @@
 
 .icon-button {
     position: absolute;
-    left: 10px;
-    top: 10px;
-    font-size: 46px;
-    color: var(--color-text);
-    width: 60px;
-    height: 60px;
+    top: 50%;
+    translate: 0 -50%;
+    width: 40px;
+    height: 40px;
     background-color: transparent;
     border-width: 0;
+    -unity-background-scale-mode: scale-to-fit;
 }
-
+.icon-button--left {
+    left: 10px;
+    background-image: url('project://database/Assets/_Yawordle/UI/Icons/settings.png');
+}
 .icon-button--right {
-    left: auto; 
     right: 10px;
+    background-image: url('project://database/Assets/_Yawordle/UI/Icons/help-circle.png');
 }
 
+/* --- Kontenery Układu --- */
 .modal-container {
     display: none;
     position: absolute;
@@ -67,23 +68,24 @@
     right: 0;
     bottom: 0;
     justify-content: center;
+    align-items: center;
     background-color: rgba(0, 0, 0, 0.7);
-    
 }
-
 
 .game-area {
     flex-grow: 1;
+    flex-shrink: 0;
     width: 100%;
     justify-content: center;
     align-items: center;
-  
+    display: flex;
+    min-height: 0;
+    padding-bottom: 20px;
 }
 
 /* --- Plansza i Kafelki --- */
 .game-board-container {
-    width: 100%;
-    max-width: 450px;
+    width: 80%;
     height: auto;
 }
 
@@ -91,23 +93,21 @@
     flex-direction: row;
     width: 100%;
     justify-content: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
-
 
 .tile {
     flex-grow: 1;
-    margin-left: 2.5px;
-    margin-right: 2.5px;
     position: relative;
-    border-width: 2px;
+    border-width: 4px;
     border-color: var(--color-tile-border-idle);
-    justify-content: center; 
+    border-radius: 12px;
+    justify-content: center;
     align-items: center;
+    margin: 0 4px;
 }
 
 .tile-label {
-    
     position: absolute;
     font-size: var(--font-size-tile);
     -unity-font-style: bold;
@@ -115,24 +115,13 @@
 }
 
 /* --- Stany Kafelków --- */
-/* Zamiast :focus, będziemy dodawać klasę "active-row-tile" z kodu dla lepszej kontroli */
-.active-row-tile {
-    border-color: var(--color-tile-border-active);
-}
+.active-row-tile { border-color: var(--color-tile-border-active); }
+.tile--correct { background-color: var(--color-correct); border-color: var(--color-correct); }
+.tile--present { background-color: var(--color-present); border-color: var(--color-present); }
+.tile--absent { background-color: var(--color-absent); border-color: var(--color-absent); }
 
-.tile--correct {
-    background-color: var(--color-correct);
-    border-color: var(--color-correct);
-}
-.tile--present {
-    background-color: var(--color-present);
-    border-color: var(--color-present);
-}
-.tile--absent {
-    background-color: var(--color-absent);
-    border-color: var(--color-absent);
-}
 
+/* --- Powiadomienia --- */
 .toast-notification {
     position: absolute;
     top: 15%;
@@ -146,50 +135,56 @@
 }
 
 
-
-/* --- Klawiatura --- */
+/* --- Klawiatura  --- */
 .keyboard-container {
     width: 100%;
-    max-width: 600px;
-    align-items: center;
-    margin-top: 20px;
+    padding: 0 5px;
+    margin-bottom: 50px;
+    flex-shrink: 0;
+    align-items: stretch;
 }
 
 .keyboard-row {
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-evenly;
     width: auto;
     max-width: 100%;
-    flex-wrap: wrap; 
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+}
+.keyboard-row--last {
+    margin-bottom: 0;
 }
 
 .key {
+    min-width: 100px;
     flex-grow: 1;
-    min-width: 30px; /* Minimalna szerokość, żeby klawisze nie zniknęły na wąskich ekranach */
-    height: 50px;
+    height: 150px;
+    margin: 0 3px;
+    border-radius: 6px;
     background-color: rgb(129, 131, 132);
-    border-radius: 5px;
-    margin: 0 2px;
     justify-content: center;
     align-items: center;
     color: var(--color-text);
-    font-size: 18px;
+    font-size: var(--font-size-key);
     -unity-font-style: bold;
-    -unity-background-image-tint-color: rgb(129, 131, 132); /* Ważne dla zmiany koloru */
-    transition: background-color 0.2s ease;
+}
+
+.key--functional {
+    width: 100px;
+}
+
+/* Styl dla pustego "spychacza" w klawiaturze */
+.key-spacer {
+    flex-grow: 0.5; /* Spacer ma wagę 0.5 klawisza literowego */
+    margin: 0 3px;
 }
 
 .key:hover {
     background-color: rgb(160, 160, 160);
-    -unity-background-image-tint-color: rgb(160, 160, 160);
-}
-
-.key--large {
-    flex-grow: 1.5;
 }
 
 /* Stany klawiszy */
-.key--correct { background-color: var(--color-correct); -unity-background-image-tint-color: var(--color-correct); }
-.key--present { background-color: var(--color-present); -unity-background-image-tint-color: var(--color-present); }
-.key--absent { background-color: var(--color-absent); -unity-background-image-tint-color: var(--color-absent); }
+.key--correct { background-color: var(--color-correct); }
+.key--present { background-color: var(--color-present); }
+.key--absent { background-color: var(--color-absent); }
+
