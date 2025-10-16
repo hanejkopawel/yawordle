@@ -1,0 +1,83 @@
+/*InstructionsPanel.uss*/
+@import url("../Themes/tokens.uss");
+
+
+.instructions-panel {
+    width: 95%;
+    max-width: 800px;
+    max-height: 85%;
+    padding: var(--spacing-xl);
+    background-color: var(--color-panel-background);
+    border-radius: 12px;
+    flex-direction: column;
+    overflow: scroll; 
+}
+
+.instructions-panel__title {
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: var(--color-text-primary);
+    -unity-text-align: middle-center;
+    margin-bottom: var(--spacing-m);
+}
+
+.instructions-panel__subtitle {
+    font-size: var(--font-size-subtitle);
+    -unity-font-style: bold;
+    color: var(--color-text-primary);
+    margin: var(--spacing-m) 0 var(--spacing-s);
+    border-bottom-width: 1px;
+    border-bottom-color: grey;
+    padding-bottom: 5px;
+}
+.instructions-panel__description {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    margin-bottom: var(--spacing-m);
+}
+
+.instructions-panel__rules { margin-left: 10px; margin-bottom: var(--spacing-s); }
+.instructions-panel__rule-item {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body);
+    white-space: normal;
+}
+
+.instructions-panel__examples { }
+.instructions-panel__example-row { flex-direction: row; margin-bottom: 5px; }
+.instructions-panel__example-desc {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    white-space: normal;
+    margin-bottom: var(--spacing-m);
+}
+
+.instructions-panel__example-tile {
+    width: 40px; height: 40px;
+    color: var(--color-text-primary);
+    -unity-font-style: bold;
+    font-size: 24px;
+    -unity-text-align: middle-center;
+    margin-right: 5px;
+    border-left-width: 2px; border-right-width: 2px; border-top-width: 2px; border-bottom-width: 2px;
+    border-color: var(--color-tile-border-idle);
+}
+.instructions-panel__example-tile--correct {
+    background-color: var(--color-correct); border-color: transparent;
+}
+.instructions-panel__example-tile--present {
+    background-color: var(--color-present); border-color: transparent;
+}
+.instructions-panel__example-tile--absent {
+    background-color: var(--color-absent); border-color: transparent;
+}
+
+.instructions-panel__button {
+    font-size: var(--font-size-body);
+    margin-top: var(--spacing-l);
+    align-self: center;
+    padding: var(--spacing-s) var(--spacing-m);
+}
+

@@ -1,0 +1,61 @@
+/* SettingsPanel.uss */
+@import url("../Themes/tokens.uss");
+
+
+.settings-panel {
+    width: 95%;
+    max-width: 800px;
+    min-height: 300px;
+    background-color: var(--color-panel-background);
+    border-radius: 12px;
+    padding: var(--spacing-xl);
+    flex-direction: column;
+}
+
+.settings-panel__title {
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-l);
+    -unity-text-align: middle-center;
+}
+
+.settings-panel__row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--spacing-m);
+}
+
+.settings-panel__label {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body);
+    margin-right: var(--spacing-m);
+}
+
+.settings-panel__control {
+    flex-grow: 1;
+}
+
+.settings-panel__slider-value {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body);
+    margin-left: var(--spacing-m);
+    min-width: 20px;
+}
+
+.settings-panel__button-row {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: var(--spacing-xl);
+}
+
+.settings-panel__button {
+    font-size: var(--font-size-body);
+    margin-left: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
+}
+
+.settings-panel__button--secondary {
+    background-color: var(--color-button-secondary);
+    border-color: var(--color-button-secondary);
+}
