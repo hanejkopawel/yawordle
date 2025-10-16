@@ -1,0 +1,30 @@
+
+:root {
+    /* --- Colors --- */
+    --color-background: rgb(18, 18, 19);
+    --color-text-primary: rgb(248, 248, 248);
+    --color-text-secondary: rgb(211, 211, 211);
+    --color-tile-border-idle: rgb(58, 58, 60);
+    --color-tile-border-active: rgb(86, 87, 88);
+    --color-correct: #538d4e;
+    --color-present: #b59f3b;
+    --color-absent: #3a3a3c;
+    --color-panel-background: rgb(40, 40, 42);
+    --color-key-background: rgb(129, 131, 132);
+    --color-key-background-hover: rgb(160, 160, 160);
+    --color-button-secondary: rgb(120, 120, 120);
+
+    /* --- Font Sizes --- */
+    --font-size-title: 32px;
+    --font-size-subtitle: 20px;
+    --font-size-body: 16px;
+    --font-size-tile: 32px;
+    --font-size-key: 18px;
+
+    /* --- Spacing --- */
+    --spacing-xs: 4px;
+    --spacing-s: 8px;
+    --spacing-m: 16px;
+    --spacing-l: 24px;
+    --spacing-xl: 32px;
+}

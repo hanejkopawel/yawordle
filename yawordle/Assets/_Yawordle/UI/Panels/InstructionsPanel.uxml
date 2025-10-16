@@ -1,0 +1,54 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    
+    <ui:Style src="../Themes/tokens.uss" />
+    <ui:Style src="../Components/modal.uss" />
+    <ui:Style src="instructions-panel.uss" />
+    
+    <ui:VisualElement name="instructions-panel" class="modal__panel instructions-panel">
+        
+        <ui:Label text="How To Play" class="instructions-panel__title" />
+        <ui:Label text="Guess the word in 6 tries." class="instructions-panel__description" />
+
+        <ui:VisualElement class="instructions-panel__rules">
+            <ui:Label text="• Each guess must be a valid word of the correct length." class="instructions-panel__rule-item" />
+            <ui:Label text="• The color of the tiles will change to show how close your guess was to the word." class="instructions-panel__rule-item" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="instructions-panel__examples">
+            
+            <ui:Label text="Examples" class="instructions-panel__subtitle" />
+            
+            <ui:VisualElement class="instructions-panel__example-row">
+                <ui:Label text="W" class="instructions-panel__example-tile" />
+                <ui:Label text="E" class="instructions-panel__example-tile instructions-panel__example-tile--correct" />
+                <ui:Label text="A" class="instructions-panel__example-tile" />
+                <ui:Label text="R" class="instructions-panel__example-tile" />
+                <ui:Label text="Y" class="instructions-panel__example-tile" />
+            </ui:VisualElement>
+            
+            <ui:Label text="The letter E is in the word and in the correct spot." class="instructions-panel__example-desc" />
+            
+            <ui:VisualElement class="instructions-panel__example-row">
+                <ui:Label text="P" class="instructions-panel__example-tile instructions-panel__example-tile--present" />
+                <ui:Label text="I" class="instructions-panel__example-tile" />
+                <ui:Label text="L" class="instructions-panel__example-tile" />
+                <ui:Label text="L" class="instructions-panel__example-tile" />
+                <ui:Label text="S" class="instructions-panel__example-tile" />
+            </ui:VisualElement>
+            
+            <ui:Label text="The letter P is in the word but in the wrong spot." class="instructions-panel__example-desc" />
+
+            <ui:VisualElement class="instructions-panel__example-row">
+                <ui:Label text="V" class="instructions-panel__example-tile" />
+                <ui:Label text="A" class="instructions-panel__example-tile" />
+                <ui:Label text="G" class="instructions-panel__example-tile" />
+                <ui:Label text="U" class="instructions-panel__example-tile instructions-panel__example-tile--absent" />
+                <ui:Label text="E" class="instructions-panel__example-tile" />
+            </ui:VisualElement>
+            <ui:Label text="The letter U is not in the word in any spot." class="instructions-panel__example-desc" />
+        </ui:VisualElement>
+        
+        <ui:Button name="close-button" text="Got it!" class="instructions-panel__button" />
+        
+    </ui:VisualElement>
+</ui:UXML>

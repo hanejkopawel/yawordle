@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    
+    <ui:Style src="../Themes/tokens.uss" />
+    <ui:Style src="../Components/modal.uss" />
+    <ui:Style src="end-game-panel.uss" />
+
+
+    <ui:VisualElement name="end-game-panel" class="modal__panel end-game-panel">
+        <ui:Label name="result-title" class="end-game-panel__title" />
+        <ui:Label name="info-text" class="end-game-panel__info" />
+        <ui:VisualElement class="end-game-panel__buttons">
+            <ui:Button name="play-again-button" text="Play Again" class="end-game-panel__button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    
+</ui:UXML>

@@ -5,10 +5,11 @@
     xmlns:engine="UnityEngine.UIElements"
     xmlns:uie="UnityEditor.UIElements"
     xmlns:cui="Bitbebop"
-    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
 >
-    
-    <ui:Style src="GameScreen.uss" />
+    <ui:Style src="../Themes/tokens.uss" />
+    <ui:Style src="../Components/modal.uss" />
+    <ui:Style src="game-screen.uss" />
     
     <cui:SafeArea name="screen-container" class="screen-container">
         <ui:VisualElement name="header" class="header">
@@ -20,7 +21,7 @@
             <ui:VisualElement name="game-board-container" class="game-board-container" />
         </ui:VisualElement>
         <ui:VisualElement name="keyboard-container" class="keyboard-container" />
-        <ui:VisualElement name="modal-container" class="modal-container" picking-mode="Ignore"/>
+        <ui:VisualElement name="modal-container" class="modal" />
         <ui:Label name="toast-notification" class="toast-notification" picking-mode="Ignore"/>
     </cui:SafeArea>
     

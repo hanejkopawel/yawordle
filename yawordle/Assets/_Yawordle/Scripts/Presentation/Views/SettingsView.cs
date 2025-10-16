@@ -16,10 +16,10 @@ namespace Yawordle.Presentation.Views
 
         // Elements from GameScreen.uxml
         private VisualElement _modalContainer;
+        private VisualElement _settingsContent;
         private Button _openSettingsButton;
         
         // Elements from SettingsPanel.uxml
-        private VisualElement _settingsOverlayInstance;
         private VisualElement _settingsPanel;
         private DropdownField _languageDropdown;
         private DropdownField _gameModeDropdown;
@@ -41,8 +41,8 @@ namespace Yawordle.Presentation.Views
 
             _modalContainer = root.Q<VisualElement>("modal-container");
             _openSettingsButton = root.Q<Button>("settings-button");
-            _openSettingsButton.clicked += OpenPanel;
             PreparePanel();
+            _openSettingsButton.clicked += OpenPanel;
         }
         
         /// <summary>
@@ -57,24 +57,61 @@ namespace Yawordle.Presentation.Views
                 return;
             }
             
-            _settingsOverlayInstance = _uiSettings.SettingsPanel.Instantiate();
-            _settingsOverlayInstance.AddToClassList("panel-container");
-            _modalContainer.Add(_settingsOverlayInstance);
+            var panelInstance = _uiSettings.SettingsPanel.Instantiate(); 
+            _settingsContent = panelInstance;
+            _settingsContent.AddToClassList("modal__content");
+            _modalContainer.Add(_settingsContent);
 
-            // Find controls once and store their references.
-            _settingsPanel = _settingsOverlayInstance.Q<VisualElement>("settings-panel");
-            _languageDropdown = _settingsOverlayInstance.Q<DropdownField>("language-dropdown");
-            _gameModeDropdown = _settingsOverlayInstance.Q<DropdownField>("game-mode-dropdown");
-            _wordLengthSlider = _settingsOverlayInstance.Q<SliderInt>("word-length-slider");
-            _wordLengthValueLabel = _settingsOverlayInstance.Q<Label>("word-length-value-label");
-            _saveButton = _settingsOverlayInstance.Q<Button>("save-button");
-            _cancelButton = _settingsOverlayInstance.Q<Button>("cancel-button");
+            _settingsPanel = _settingsContent.Q<VisualElement>("settings-panel");
+            _settingsContent.RegisterCallback<ClickEvent>(OnSettingsBackdropClick);
+            
+            _languageDropdown = _settingsPanel.Q<DropdownField>("language-dropdown");
+            _gameModeDropdown = _settingsPanel.Q<DropdownField>("game-mode-dropdown");
+            _wordLengthSlider = _settingsPanel.Q<SliderInt>("word-length-slider");
+            _wordLengthValueLabel = _settingsPanel.Q<Label>("word-length-value-label");
+            _saveButton = _settingsPanel.Q<Button>("save-button");
+            _cancelButton = _settingsPanel.Q<Button>("cancel-button");
 
-            _saveButton.clicked += OnSaveAndRestart;
             _cancelButton.clicked += ClosePanel;
 
         }
+        
+        private void OnSettingsBackdropClick(ClickEvent e) {
+            if (!_settingsContent.ClassListContains("is-active")) return;
 
+            // jeśli klik był wewnątrz panelu – nie zamykaj
+            if (e.target is VisualElement target && _settingsPanel.Contains(target)) return;
+            ClosePanel();
+        }
+
+        private void OpenPanel()
+        {
+            _viewModel = _resolver.Resolve<SettingsViewModel>();
+            
+            _languageDropdown.choices = new List<string> { "en", "pl" };
+            _languageDropdown.value = _viewModel.TempSettings.Language;
+            _gameModeDropdown.choices = new List<string> { nameof(GameMode.Unlimited), nameof(GameMode.Daily) };
+            _gameModeDropdown.value = _viewModel.TempSettings.Mode.ToString();
+            _wordLengthSlider.value = _viewModel.TempSettings.WordLength;
+            _wordLengthValueLabel.text = _viewModel.TempSettings.WordLength.ToString();
+            
+            _languageDropdown.RegisterValueChangedCallback(OnLanguageChanged);
+            _gameModeDropdown.RegisterValueChangedCallback(OnGameModeChanged);
+            _wordLengthSlider.RegisterValueChangedCallback(OnWordLengthChanged);
+            _saveButton.clicked += OnSaveAndRestart;
+            
+            UIUtils.OpenModal(_modalContainer, _settingsContent, _settingsPanel);
+        }
+        private void ClosePanel()
+        {
+            _languageDropdown.UnregisterValueChangedCallback(OnLanguageChanged);
+            _gameModeDropdown.UnregisterValueChangedCallback(OnGameModeChanged);
+            _wordLengthSlider.UnregisterValueChangedCallback(OnWordLengthChanged);
+            _saveButton.clicked -= OnSaveAndRestart;
+            
+            UIUtils.CloseModal(_modalContainer, _settingsContent, _settingsPanel);
+        }
+        
         private void OnLanguageChanged(ChangeEvent<string> evt) => _viewModel.SetLanguage(evt.newValue);
         private void OnGameModeChanged(ChangeEvent<string> evt)
         {
@@ -88,55 +125,8 @@ namespace Yawordle.Presentation.Views
             _viewModel.SetWordLength(evt.newValue);
             _wordLengthValueLabel.text = evt.newValue.ToString();
         }
-        
-        // Use a dedicated method for the save button to allow for clean unsubscription
         private void OnSaveAndRestart() => _viewModel.SaveAndRestart();
         
-        private void OpenPanel()
-        {
-            // Create a fresh ViewModel to hold temporary settings.
-            _viewModel = _resolver.Resolve<SettingsViewModel>();
-            
-            // Populate controls with current data from the ViewModel.
-            _languageDropdown.choices = new List<string> { "en", "pl" };
-            _languageDropdown.value = _viewModel.TempSettings.Language;
-            
-            _gameModeDropdown.choices = new List<string> { "Unlimited", "Daily" };
-            _gameModeDropdown.value = _viewModel.TempSettings.Mode.ToString();
-            
-            _wordLengthSlider.value = _viewModel.TempSettings.WordLength;
-            _wordLengthValueLabel.text = _viewModel.TempSettings.WordLength.ToString();
-
-            // Register callbacks for UI controls.
-            _languageDropdown.RegisterValueChangedCallback(OnLanguageChanged);
-            _gameModeDropdown.RegisterValueChangedCallback(OnGameModeChanged);
-            _wordLengthSlider.RegisterValueChangedCallback(OnWordLengthChanged);
-            
-            // Show the panel by switching the main containers' visibility.
-            _modalContainer.style.display = DisplayStyle.Flex;
-            _settingsOverlayInstance.style.display = DisplayStyle.Flex;
-            _settingsOverlayInstance.schedule.Execute(() => {
-                _settingsPanel.AddToClassList("settings-panel--is-visible");
-            });
-        }
-        private void ClosePanel()
-        {
-            // Unregister callbacks to prevent them from firing when the panel is hidden.
-            _languageDropdown.UnregisterValueChangedCallback(OnLanguageChanged);
-            _gameModeDropdown.UnregisterValueChangedCallback(OnGameModeChanged);
-            _wordLengthSlider.UnregisterValueChangedCallback(OnWordLengthChanged);
-            
-            _settingsPanel.RemoveFromClassList("settings-panel--is-visible");
-            _settingsPanel.RegisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
-        }
         
-        private void OnCloseTransitionEnd(TransitionEndEvent evt)
-        {
-            if (evt.target != _settingsPanel) return;
-            _settingsPanel.UnregisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
-                
-            _settingsOverlayInstance.style.display = DisplayStyle.None;
-            _modalContainer.style.display = DisplayStyle.None;
-        }
     }
 }

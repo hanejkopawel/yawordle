@@ -11,7 +11,7 @@ namespace Yawordle.Presentation.Views
         private readonly UISettings _uiSettings;
 
         private VisualElement _modalContainer;
-        private VisualElement _instructionsOverlayInstance; 
+        private VisualElement _instructionsContent;
         private VisualElement _instructionsPanel;
         private Button _closeButton;
         private Button _openHelpButton;
@@ -43,27 +43,28 @@ namespace Yawordle.Presentation.Views
                 Debug.LogError("InstructionsPanel VisualTreeAsset is not assigned in UISettings.");
                 return;
             }
-            _instructionsOverlayInstance = _uiSettings.InstructionsPanel.Instantiate();
-            _instructionsOverlayInstance.AddToClassList("panel-container");
-            _modalContainer.Add(_instructionsOverlayInstance);
-            
+            _instructionsContent = _uiSettings.InstructionsPanel.Instantiate(); // TemplateContainer
+            _instructionsContent.AddToClassList("modal__content");
+            _modalContainer.Add(_instructionsContent);
+
             // Find controls once and store their references.
-            _instructionsPanel = _instructionsOverlayInstance.Q<VisualElement>("instructions-panel");
-            _closeButton = _instructionsOverlayInstance.Q<Button>("close-button");
-            
+            _instructionsPanel = _instructionsContent.Q<VisualElement>("instructions-panel");
+            _instructionsContent.RegisterCallback<ClickEvent>(OnInstructionsBackdropClick);
+
+            _closeButton = _instructionsPanel.Q<Button>("close-button");
             _closeButton.clicked += ClosePanel;
         }
-
-        private void OpenPanel()
-        {
-            _modalContainer.style.display = DisplayStyle.Flex;
-            _instructionsOverlayInstance.style.display = DisplayStyle.Flex;
-            
-            _instructionsPanel.schedule.Execute(() => {
-                _instructionsPanel.AddToClassList("instructions-panel--is-visible");
-            });
-        }
         
+        private void OnInstructionsBackdropClick(ClickEvent e) {
+            if (!_instructionsContent.ClassListContains("is-active")) return;
+
+            // Ignore inside panels clicks
+            if (e.target is VisualElement target && _instructionsPanel.Contains(target)) return;
+            ClosePanel();
+        }
+
+        private void OpenPanel() => UIUtils.OpenModal(_modalContainer, _instructionsContent, _instructionsPanel);
+
         private void ClosePanel()
         {
             if (!_settingsService.CurrentSettings.HasSeenInstructions)
@@ -72,18 +73,7 @@ namespace Yawordle.Presentation.Views
                 settings.HasSeenInstructions = true;
                 _settingsService.SaveSettings(settings);
             }
-            
-            _instructionsPanel.RemoveFromClassList("instructions-panel--is-visible");
-            _instructionsPanel.RegisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
-        }
-
-        private void OnCloseTransitionEnd(TransitionEndEvent evt)
-        {
-            if (evt.target != _instructionsPanel)
-                return;
-            _instructionsPanel.UnregisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
-            _instructionsOverlayInstance.style.display = DisplayStyle.None;
-            _modalContainer.style.display = DisplayStyle.None;
+            UIUtils.CloseModal(_modalContainer, _instructionsContent, _instructionsPanel);
         }
     }
 }

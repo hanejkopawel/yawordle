@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:Style src="../Themes/tokens.uss" />
+    <ui:Style src="../Components/modal.uss" />
+    <ui:Style src="settings-panel.uss" />
+    
+    <ui:VisualElement name="settings-panel" class="modal__panel settings-panel">
+        
+        <ui:Label text="Settings" class="settings-panel__title" />
+        
+        <ui:VisualElement class="settings-panel__row">
+            <ui:Label text="Language" class="settings-panel__label" />
+            <ui:DropdownField name="language-dropdown" class="settings-panel__control" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="settings-panel__row">
+            <ui:Label text="Game Mode" class="settings-panel__label" />
+            <ui:DropdownField name="game-mode-dropdown" class="settings-panel__control" />
+        </ui:VisualElement>
+        
+        <ui:VisualElement class="settings-panel__row">
+            <ui:Label text="Word Length (Difficulty)" class="settings-panel__label" />
+            <ui:SliderInt name="word-length-slider" low-value="4" high-value="6" class="settings-panel__control" />
+            <ui:Label name="word-length-value-label" text="5" class="settings-panel__slider-value" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="settings-panel__button-row">
+            <ui:Button name="save-button" text="Save &amp; Restart" class="settings-panel__button" />
+            <ui:Button name="cancel-button" text="Cancel" class="settings-panel__button settings-panel__button--secondary" />
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

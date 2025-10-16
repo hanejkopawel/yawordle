@@ -1,28 +1,15 @@
 /* GameScreen.uss */
-/* --- Zmienne Globalne (Paleta Kolorów i Rozmiary) --- */
-:root {
-    --color-background: rgb(18, 18, 19);
-    --color-text: white;
-    --color-tile-border-idle: rgb(58, 58, 60);
-    --color-tile-border-active: rgb(86, 87, 88);
-    --color-correct: #538d4e;
-    --color-present: #b59f3b;
-    --color-absent: #3a3a3c;
-    --font-size-title: 50px;
-    --font-size-tile: 60px;
-    --font-size-key: 18px;
-}
+@import url("../Themes/tokens.uss");
 
-/* --- Style Podstawowe --- */
+
 .screen-container {
     flex-grow: 1;
     background-color: var(--color-background);
     flex-direction: column;
     position: relative;
-    padding: 30px;
+    padding: var(--spacing-xl);
 }
 
-/* --- Header --- */
 .header {
     width: 100%;
     height: 128px;
@@ -35,7 +22,7 @@
 .title {
     font-size: var(--font-size-title);
     -unity-font-style: bold;
-    color: var(--color-text);
+    color: var(--color-text-primary);
     letter-spacing: 2px;
     -unity-text-align: middle-center;
 }
@@ -52,33 +39,14 @@
     -unity-background-scale-mode: scale-to-fit;
 }
 .icon-button--left {
-    left: 10px;
+    left: var(--spacing-m);
     background-image: url('project://database/Assets/_Yawordle/UI/Icons/settings.png');
 }
 .icon-button--right {
-    right: 10px;
+    right: var(--spacing-m);
     background-image: url('project://database/Assets/_Yawordle/UI/Icons/help.png');
 }
 
-/* --- Kontenery Układu --- */
-.modal-container {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-.panel-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: none;
-}
 
 .game-area {
     flex-grow: 1;
@@ -88,10 +56,9 @@
     align-items: center;
     display: flex;
     min-height: 0;
-    padding-bottom: 20px;
+    padding-bottom: var(--spacing-m);
 }
 
-/* --- Plansza i Kafelki --- */
 .game-board-container {
     width: 80%;
     height: auto;
@@ -101,7 +68,7 @@
     flex-direction: row;
     width: 100%;
     justify-content: center;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-s);
 }
 
 .tile {
@@ -112,14 +79,14 @@
     border-radius: 12px;
     justify-content: center;
     align-items: center;
-    margin: 0 4px;
+    margin: 0 var(--spacing-xs);
 }
 
 .tile-label {
     position: absolute;
     font-size: var(--font-size-tile);
     -unity-font-style: bold;
-    color: var(--color-text);
+    color: var(--color-text-primary);
 }
 
 /* --- Stany Kafelków --- */
@@ -133,11 +100,11 @@
 .toast-notification {
     position: absolute;
     top: 15%;
-    background-color: var(--color-text);
+    background-color: var(--color-text-primary);
     color: var(--color-background);
-    padding: 10px 20px;
+    padding: var(--spacing-s) var(--spacing-m);
     border-radius: 20px;
-    font-size: 16px;
+    font-size: var(--font-size-body);
     -unity-font-style: bold;
     display: none;
 }
@@ -146,7 +113,7 @@
 /* --- Klawiatura  --- */
 .keyboard-container {
     width: 100%;
-    padding: 0 5px;
+    padding: 0 var(--spacing-xs);
     flex-shrink: 0;
     align-items: stretch;
 }
@@ -156,7 +123,7 @@
     justify-content: space-evenly;
     width: auto;
     max-width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: var(--spacing-s);
 }
 .keyboard-row--last {
     margin-bottom: 0;
@@ -167,12 +134,12 @@
     width: 8.5%;
     flex-grow: 1;
     height: 150px;
-    margin: 0 3px;
+    margin: 0 var(--spacing-xs);
     border-radius: 6px;
-    background-color: rgb(129, 131, 132);
+    background-color: var(--color-key-background);
     justify-content: center;
     align-items: center;
-    color: var(--color-text);
+    color: var(--color-text-primary);
     font-size: var(--font-size-key);
     -unity-font-style: bold;
 }
@@ -189,14 +156,9 @@
     color: transparent;
 }
 
-/* Styl dla pustego "spychacza" w klawiaturze */
-.key-spacer {
-    flex-grow: 0.5; /* Spacer ma wagę 0.5 klawisza literowego */
-    margin: 0 3px;
-}
 
 .key:hover {
-    background-color: rgb(160, 160, 160);
+    background-color: var(--color-key-background-hover);
 }
 
 /* Stany klawiszy */

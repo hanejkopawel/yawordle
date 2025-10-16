@@ -1,0 +1,46 @@
+/* EndGamePanel.uss */
+
+.end-game-panel {
+    width: 95%;
+    max-width: 800px;
+    min-height: 280px;
+    background-color: var(--color-panel-background);
+    border-radius: 12px;
+    padding: var(--spacing-xl);
+    flex-direction: column;
+}
+
+/* Tytuł i info */
+.end-game-panel__title {
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: var(--color-text-primary);
+    -unity-text-align: middle-center;
+    margin-bottom: var(--spacing-m);
+}
+
+.end-game-panel__info {
+    font-size: var(--font-size-body);
+    color: var(--color-text-primary);
+    -unity-text-align: middle-center;
+    margin: var(--spacing-s) 0 var(--spacing-l);
+}
+
+/* Wiersze/przyciski */
+.end-game-panel__buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: var(--spacing-l);
+}
+
+.end-game-panel__button {
+    font-size: var(--font-size-body);
+    padding: var(--spacing-s) var(--spacing-m);
+    margin-left: var(--spacing-s);
+}
+
+/* jeśli chcesz wariant secondary */
+.end-game-panel__button--secondary {
+    background-color: var(--color-button-secondary);
+    border-color: var(--color-button-secondary);
+}

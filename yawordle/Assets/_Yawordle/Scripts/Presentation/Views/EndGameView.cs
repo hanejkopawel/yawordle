@@ -12,9 +12,9 @@ namespace Yawordle.Presentation.Views
         private readonly GameBoardViewModel _gameBoardViewModel;
         private readonly UISettings _uiSettings;
 
-        private VisualElement _modalContainer;
-        private VisualElement _endGameOverlayInstance;
-        private VisualElement _endGamePanel;
+        private VisualElement _modalContainer;   // overlay z GameScreen (class="modal")
+        private VisualElement _endGameContent;   // TemplateContainer (class="modal__content")
+        private VisualElement _endGamePanel;     // modal__panel end-game-panel
         private Label _resultTitle;
         private Label _infoText;
         private Button _playAgainButton;
@@ -45,55 +45,75 @@ namespace Yawordle.Presentation.Views
                 return;
             }
             
-            _endGameOverlayInstance = _uiSettings.EndGamePanel.Instantiate();
-            _endGameOverlayInstance.AddToClassList("panel-container");
-            _modalContainer.Add(_endGameOverlayInstance);
-            
-            // Find controls once and store their references.
-            _endGamePanel = _endGameOverlayInstance.Q<VisualElement>("end-game-panel");
-            _resultTitle = _endGameOverlayInstance.Q<Label>("result-title");
-            _infoText = _endGameOverlayInstance.Q<Label>("info-text");
-            _playAgainButton = _endGameOverlayInstance.Q<Button>("play-again-button");
-            
+            _endGameContent = _uiSettings.EndGamePanel.Instantiate(); 
+            _endGameContent.AddToClassList("modal__content");
+            _endGameContent.RegisterCallback<ClickEvent>(OnEndGameBackdropClick);
+
+            _modalContainer.Add(_endGameContent);
+
+            _endGamePanel = _endGameContent.Q<VisualElement>("end-game-panel");
+            _resultTitle = _endGamePanel.Q<Label>("result-title");
+            _infoText = _endGamePanel.Q<Label>("info-text");
+            _playAgainButton = _endGamePanel.Q<Button>("play-again-button");
+
             _playAgainButton.clicked += PlayAgain;
 
+        }
+        
+        private void OnEndGameBackdropClick(ClickEvent e) {
+            if (!_endGameContent.ClassListContains("is-active")) return;
+
+            // Ignore inside panels clicks
+            if (e.target is VisualElement target && _endGamePanel.Contains(target)) return;
+            PlayAgain();
         }
 
         private void OpenPanel(bool isWin, string targetWord) => ShowPanelAsync(isWin, targetWord).Forget();
         
         
-        private async UniTaskVoid ShowPanelAsync(bool isWin, string targetWord)
+        private async UniTaskVoid ShowPanelAsync(bool isWin, string targetWord) 
         {
             
-            if (isWin)
+            if (isWin) 
             {
                 _resultTitle.text = "Congratulations!";
                 _infoText.text = "You guessed the word!";
-            }
-            else
+            } 
+            else 
             {
                 _resultTitle.text = "Game Over";
                 _infoText.text = $"The correct word was: {targetWord.ToUpper()}";
             }
-            _modalContainer.style.display = DisplayStyle.Flex;
-            _endGameOverlayInstance.style.display = DisplayStyle.Flex; 
-            await UniTask.Delay(2500); 
-            _endGamePanel.schedule.Execute(() => {
-                _endGamePanel.AddToClassList("end-game-panel--is-visible");
-            });
+
+            _endGameContent.BringToFront();
+            _endGameContent.AddToClassList("is-active");
+            _modalContainer.AddToClassList("modal--is-open");
+
+            await UniTask.Delay(2500);
+            _endGamePanel.schedule.Execute(() => _endGamePanel.AddToClassList("modal__panel--is-visible"));
         }
 
         private void PlayAgain() 
         {
-            if (_endGamePanel != null)
+            if (_endGamePanel == null) 
             {
-                _endGamePanel.RegisterCallback<TransitionEndEvent>(
-                    evt => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex));
-                _endGamePanel.RemoveFromClassList("end-game-panel--is-visible");    
-            }
-            else
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+                return;
+            }
 
+            _endGamePanel.RegisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
+            _endGamePanel.RemoveFromClassList("modal__panel--is-visible");
+        }
+        
+        private void OnCloseTransitionEnd(TransitionEndEvent e) 
+        {
+            if (e.target != _endGamePanel) return;
+            _endGamePanel.UnregisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
+
+            _endGameContent.RemoveFromClassList("is-active");
+            _modalContainer.RemoveFromClassList("modal--is-open");
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }

@@ -1,0 +1,22 @@
+.modal {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+    justify-content: center; align-items: center;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+.modal--is-open { display: flex; }
+
+.modal__content {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+    justify-content: center; align-items: center;
+}
+.modal__content.is-active { display: flex; }
+
+.modal__panel {
+    opacity: 0; scale: 0.95; translate: 0 30px;
+    transition-property: opacity, scale, translate;
+    transition-duration: .25s, .3s, .3s;
+    transition-timing-function: ease-out;
+}
+.modal__panel--is-visible { opacity: 1; scale: 1; translate: 0 0; }
