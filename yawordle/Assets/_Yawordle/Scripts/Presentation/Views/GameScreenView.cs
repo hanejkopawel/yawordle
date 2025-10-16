@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Bitbebop;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer.Unity;
@@ -17,6 +19,8 @@ namespace Yawordle.Presentation.Views
         private readonly ISettingsService _settingsService;
         private readonly IKeyboardLayoutProvider _keyboardLayoutProvider;
 
+        private SafeArea _screenContainer;
+        private VisualElement _header;
         private VisualElement _boardContainer;
         private VisualElement[][] _tileElements;
         private Label[][] _tileLabels;
@@ -42,19 +46,54 @@ namespace Yawordle.Presentation.Views
             var uiDocument = Object.FindAnyObjectByType<UIDocument>();
             var root = uiDocument.rootVisualElement;
 
+            // Find all root containers from UXML
+            _screenContainer = root.Q<SafeArea>("screen-container");
+            _header = root.Q<VisualElement>("header");
             _boardContainer = root.Q<VisualElement>("game-board-container");
-            _boardContainer.focusable = true;
-            _boardContainer.Focus();
-            
             _keyboardContainer = root.Q<VisualElement>("keyboard-container");
             _toastNotification = root.Q<Label>("toast-notification");
 
+            _boardContainer.focusable = true;
+            _boardContainer.Focus();
+
+            // Register a single callback on the root container to handle all geometry changes
+            _screenContainer.RegisterCallback<GeometryChangedEvent>(OnScreenGeometryChanged);
+            
             GenerateGrid();
             GenerateKeyboard();
             BindToViewModel();
             BindKeyboardInput();
+        }
 
-            _boardContainer.RegisterCallback<GeometryChangedEvent>(OnBoardGeometryChanged);
+        private void OnScreenGeometryChanged(GeometryChangedEvent evt)
+        {
+            UpdateTileSize();
+        }
+
+
+        /// <summary>
+        /// Enforces a square aspect ratio for the tiles by setting their height
+        /// based on their calculated width.
+        /// </summary>
+        private void UpdateTileSize()
+        {
+            if (_tileElements == null || _tileElements.Length == 0 || _tileElements[0] == null || _tileElements[0].Length == 0) return;
+            var firstTile = _tileElements[0][0];
+            if (firstTile == null) return;
+            float tileWidth = firstTile.resolvedStyle.width;
+            if (tileWidth <= 0) return;
+
+            for (int i = 0; i < GameBoardViewModel.MaxAttempts; i++)
+            {
+                if (_tileElements[i] == null) continue;
+                for (int j = 0; j < _viewModel.WordLength; j++)
+                {
+                    if (_tileElements[i][j] != null)
+                    {
+                        _tileElements[i][j].style.height = tileWidth;
+                    }
+                }
+            }
         }
 
         private void GenerateGrid()
@@ -91,41 +130,55 @@ namespace Yawordle.Presentation.Views
         {
             _keyboardContainer.Clear();
             _keyButtons.Clear();
+            var layout = _keyboardLayoutProvider.GetLayoutForLanguage(_settingsService.CurrentSettings.Language);
 
-            string currentLanguage = _settingsService.CurrentSettings.Language;
-            KeyboardLayout layout = _keyboardLayoutProvider.GetLayoutForLanguage(currentLanguage);
-            
+            int rowIndex = -1;
+            int lastRowIndex = layout.KeyRows.Length - 1;
             foreach (var rowString in layout.KeyRows)
             {
+                rowIndex++;
                 var rowElement = new VisualElement();
                 rowElement.AddToClassList("keyboard-row");
-                foreach (var keyChar in rowString)
+                if(rowIndex == lastRowIndex)
+                    rowElement.AddToClassList("keyboard-row--last");
+                
+                var keys = rowString.Split(',');
+                foreach (var key in keys)
                 {
-                    var keyButton = new Button { text = keyChar.ToString() };
-                    keyButton.AddToClassList("key");
-                    keyButton.clicked += () => _viewModel.TypeLetter(keyChar);
-                    rowElement.Add(keyButton);
-                    _keyButtons[keyChar] = keyButton;
+                    
+                    if (key.Length > 1) // To jest klawisz funkcyjny (ENTER, BACKSPACE)
+                    {
+                        var button = new Button { text = key };
+                        button.AddToClassList("key");
+                        button.AddToClassList("key--functional");
+                        switch (key)
+                        {
+                            case "ENTER":
+                                button.clicked += _viewModel.SubmitGuess;
+                                break;
+                            case "BACKSPACE":
+                                button.text = string.Empty;
+                                button.AddToClassList("key--backspace");
+                                button.clicked += _viewModel.DeleteLetter;
+                                break;
+                        }
+
+                        rowElement.Add(button);
+                    }
+                    else // To jest rząd liter
+                    {
+                        foreach (var keyChar in key)
+                        {
+                            var keyButton = new Button { text = keyChar.ToString() };
+                            keyButton.AddToClassList("key");
+                            keyButton.clicked += () => _viewModel.TypeLetter(keyChar);
+                            rowElement.Add(keyButton);
+                            _keyButtons[keyChar] = keyButton;
+                        }
+                    }
                 }
                 _keyboardContainer.Add(rowElement);
             }
-
-            var bottomRow = new VisualElement();
-            bottomRow.AddToClassList("keyboard-row");
-
-            var enterButton = new Button { text = "ENTER" };
-            enterButton.AddToClassList("key");
-            enterButton.AddToClassList("key--large");
-            enterButton.clicked += _viewModel.SubmitGuess;
-            bottomRow.Add(enterButton);
-
-            var backspaceButton = new Button { text = "⌫" };
-            backspaceButton.AddToClassList("key");
-            backspaceButton.AddToClassList("key--large");
-            backspaceButton.clicked += _viewModel.DeleteLetter;
-            bottomRow.Add(backspaceButton);
-            
-            _keyboardContainer.Add(bottomRow);
         }
         
         private void BindToViewModel()
@@ -329,20 +382,5 @@ namespace Yawordle.Presentation.Views
             });
         }
         
-        private void OnBoardGeometryChanged(GeometryChangedEvent evt)
-        {
-            if (_tileElements == null || _tileElements.Length == 0) return;
-            var firstTile = _tileElements[0][0];
-            if (firstTile == null) return;
-            float tileWidth = firstTile.resolvedStyle.width;
-            if (tileWidth <= 0) return;
-            for (int i = 0; i < GameBoardViewModel.MaxAttempts; i++)
-            {
-                for (int j = 0; j < _viewModel.WordLength; j++)
-                {
-                    if (_tileElements[i][j] != null) _tileElements[i][j].style.height = tileWidth;
-                }
-            }
-        }
     }
 }

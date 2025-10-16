@@ -1,31 +1,31 @@
+/*InstructionsPanel.uss*/
+
 :root {
+    --color-panel-background: rgb(40, 40, 42);
     --color-text-primary: rgb(248, 248, 248);
     --color-text-secondary: rgb(211, 211, 211);
 }
 
-/* --- Style Współdzielone --- */
-.settings-panel {
-    width: 90%;
-    max-width: 500px;
-    background-color: var(--color-panel-background, rgb(40, 40, 42));
+
+.instructions-panel {
+    width: 80%;
+    background-color: var(--color-panel-background);
     border-radius: 10px;
     padding: 20px;
     margin: auto;
     display: none;
-
-    transition-property: opacity, scale, translate;
-    transition-duration: 0.25s, 0.3s, 0.3s;
-    transition-timing-function: ease-out;
+    
+    transition: opacity 0.25s ease-out, scale 0.3s ease-out;
     opacity: 0;
-    scale: 0.95;
-    translate: 0 30px;
+    scale: 1.1;
+    transform-origin: center;
 }
-.settings-panel--is-visible {
+.instructions-panel--is-visible {
     opacity: 1;
     scale: 1;
-    translate: 0 0;
     display: flex;
 }
+
 .button {
     font-size: 16px;
     margin-top: 20px;

@@ -27,35 +27,39 @@ namespace Yawordle.Presentation.Views
 
         public void Start()
         {
-            var root = Object.FindAnyObjectByType<UIDocument>().rootVisualElement;
+            var uiDocument = Object.FindAnyObjectByType<UIDocument>();
+            var root = uiDocument.rootVisualElement;
+            
             _modalContainer = root.Q<VisualElement>("modal-container");
+            PreparePanel();
+
+            _gameBoardViewModel.ShowEndGamePanel += OpenPanel;
+        }
+
+        private void PreparePanel()
+        {
             
             if (_uiSettings.EndGamePanel == null)
             {
                 Debug.LogError("EndGamePanel VisualTreeAsset is not assigned in UISettings.");
                 return;
             }
-            PreparePanel();
-
-            _gameBoardViewModel.ShowEndGamePanel += ShowPanel;
-        }
-
-        private void PreparePanel()
-        {
+            
             _endGameOverlayInstance = _uiSettings.EndGamePanel.Instantiate();
-            _endGameOverlayInstance.style.display = DisplayStyle.None;
+            _endGameOverlayInstance.AddToClassList("panel-container");
             _modalContainer.Add(_endGameOverlayInstance);
             
+            // Find controls once and store their references.
             _endGamePanel = _endGameOverlayInstance.Q<VisualElement>("end-game-panel");
             _resultTitle = _endGameOverlayInstance.Q<Label>("result-title");
             _infoText = _endGameOverlayInstance.Q<Label>("info-text");
             _playAgainButton = _endGameOverlayInstance.Q<Button>("play-again-button");
+            
             _playAgainButton.clicked += PlayAgain;
 
-            _endGameOverlayInstance.style.display = DisplayStyle.None; 
         }
 
-        private void ShowPanel(bool isWin, string targetWord) => ShowPanelAsync(isWin, targetWord).Forget();
+        private void OpenPanel(bool isWin, string targetWord) => ShowPanelAsync(isWin, targetWord).Forget();
         
         
         private async UniTaskVoid ShowPanelAsync(bool isWin, string targetWord)
@@ -71,14 +75,11 @@ namespace Yawordle.Presentation.Views
                 _resultTitle.text = "Game Over";
                 _infoText.text = $"The correct word was: {targetWord.ToUpper()}";
             }
-            
             _modalContainer.style.display = DisplayStyle.Flex;
-            _modalContainer.pickingMode = PickingMode.Position;
             _endGameOverlayInstance.style.display = DisplayStyle.Flex; 
-            
             await UniTask.Delay(2500); 
             _endGamePanel.schedule.Execute(() => {
-                _endGamePanel.AddToClassList("settings-panel--is-visible");
+                _endGamePanel.AddToClassList("end-game-panel--is-visible");
             });
         }
 
@@ -88,7 +89,7 @@ namespace Yawordle.Presentation.Views
             {
                 _endGamePanel.RegisterCallback<TransitionEndEvent>(
                     evt => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex));
-                _endGamePanel.RemoveFromClassList("settings-panel--is-visible");    
+                _endGamePanel.RemoveFromClassList("end-game-panel--is-visible");    
             }
             else
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

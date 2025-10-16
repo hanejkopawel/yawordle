@@ -24,16 +24,16 @@ namespace Yawordle.Presentation.Views
 
         public void Start()
         {
-            var root = Object.FindAnyObjectByType<UIDocument>().rootVisualElement;
+            var uiDocument = Object.FindAnyObjectByType<UIDocument>();
+            var root = uiDocument.rootVisualElement;
+            
             _modalContainer = root.Q<VisualElement>("modal-container");
             _openHelpButton = root.Q<Button>("help-button");
-            
+            _openHelpButton.clicked += OpenPanel;
             PreparePanel();
 
-            _openHelpButton.clicked += ShowPanel;
-
             if (!_settingsService.CurrentSettings.HasSeenInstructions) 
-                ShowPanel();
+                OpenPanel();
         }
 
         private void PreparePanel()
@@ -44,20 +44,23 @@ namespace Yawordle.Presentation.Views
                 return;
             }
             _instructionsOverlayInstance = _uiSettings.InstructionsPanel.Instantiate();
+            _instructionsOverlayInstance.AddToClassList("panel-container");
             _modalContainer.Add(_instructionsOverlayInstance);
+            
+            // Find controls once and store their references.
             _instructionsPanel = _instructionsOverlayInstance.Q<VisualElement>("instructions-panel");
             _closeButton = _instructionsOverlayInstance.Q<Button>("close-button");
+            
             _closeButton.clicked += ClosePanel;
         }
 
-        private void ShowPanel()
+        private void OpenPanel()
         {
             _modalContainer.style.display = DisplayStyle.Flex;
-            _modalContainer.pickingMode = PickingMode.Position;
             _instructionsOverlayInstance.style.display = DisplayStyle.Flex;
             
             _instructionsPanel.schedule.Execute(() => {
-                _instructionsPanel.AddToClassList("settings-panel--is-visible");
+                _instructionsPanel.AddToClassList("instructions-panel--is-visible");
             });
         }
         
@@ -70,18 +73,17 @@ namespace Yawordle.Presentation.Views
                 _settingsService.SaveSettings(settings);
             }
             
-            _instructionsPanel.RemoveFromClassList("settings-panel--is-visible");
+            _instructionsPanel.RemoveFromClassList("instructions-panel--is-visible");
             _instructionsPanel.RegisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
         }
 
         private void OnCloseTransitionEnd(TransitionEndEvent evt)
         {
-            if (evt.target != _instructionsPanel || !evt.stylePropertyNames.Contains("opacity"))
+            if (evt.target != _instructionsPanel)
                 return;
             _instructionsPanel.UnregisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);
             _instructionsOverlayInstance.style.display = DisplayStyle.None;
             _modalContainer.style.display = DisplayStyle.None;
-            _modalContainer.pickingMode = PickingMode.Ignore;
         }
     }
 }

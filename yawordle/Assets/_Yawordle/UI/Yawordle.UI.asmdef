@@ -1,3 +1,16 @@
 {
-  "name": "Yawordle.UI"
+    "name": "Yawordle.UI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:718294127ab71459bb02258a6fe311da"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

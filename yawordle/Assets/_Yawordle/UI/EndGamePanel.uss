@@ -1,10 +1,12 @@
-/* SettingsPanel.uss */
+/* EndGamePanel.uss */
 :root {
     --color-panel-background: rgb(40, 40, 42);
     --color-secondary-button: rgb(80, 80, 82);
 }
 
-.settings-panel {
+
+
+.end-game-panel {
     width: 80%;
     background-color: var(--color-panel-background);
     border-radius: 10px;
@@ -17,8 +19,7 @@
     scale: 1.1;
     transform-origin: center;
 }
-
-.settings-panel--is-visible {
+.end-game-panel--is-visible {
     opacity: 1;
     scale: 1;
     display: flex;
@@ -32,28 +33,18 @@
     -unity-text-align: middle-center;
 }
 
-.setting-row {
+.end-game-row {
     flex-direction: row;
     align-items: center;
     margin-bottom: 15px;
 }
 
-.setting-label {
+.end-game-label {
     color: white;
     font-size: 16px;
     margin-right: 15px;
 }
 
-.setting-control {
-    flex-grow: 1;
-}
-
-.slider-value-label {
-    color: white;
-    font-size: 16px;
-    margin-left: 10px;
-    min-width: 20px;
-}
 
 .button-row {
     flex-direction: row;

@@ -4,15 +4,16 @@
     xmlns:ui="UnityEngine.UIElements"
     xmlns:engine="UnityEngine.UIElements"
     xmlns:uie="UnityEditor.UIElements"
+    xmlns:cui="Bitbebop"
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
     
     <ui:Style src="GameScreen.uss" />
     
-    <ui:VisualElement name="screen-container" class="screen-container">
+    <cui:SafeArea name="screen-container" class="screen-container">
         <ui:VisualElement name="header" class="header">
-            <ui:Button name="settings-button" text="⚙️" class="icon-button" />
-            <ui:Button name="help-button" text="❓" class="icon-button icon-button--right" />
+            <ui:Button name="settings-button" class="icon-button icon-button--left" />
+            <ui:Button name="help-button" class="icon-button icon-button--right" />
             <ui:Label text="YAWORDLE" class="title" />
         </ui:VisualElement>
         <ui:VisualElement name="game-area" class="game-area">
@@ -21,6 +22,6 @@
         <ui:VisualElement name="keyboard-container" class="keyboard-container" />
         <ui:VisualElement name="modal-container" class="modal-container" picking-mode="Ignore"/>
         <ui:Label name="toast-notification" class="toast-notification" picking-mode="Ignore"/>
-    </ui:VisualElement>
+    </cui:SafeArea>
     
 </ui:UXML>

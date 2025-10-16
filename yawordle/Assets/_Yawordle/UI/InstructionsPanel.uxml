@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:Style src="InstructionsPanel.uss" />
-    <ui:VisualElement name="instructions-panel" class="settings-panel">
+    <ui:VisualElement name="instructions-panel" class="instructions-panel">
         
         <ui:Label text="How To Play" class="title" />
         <ui:Label text="Guess the word in 6 tries." class="description" />

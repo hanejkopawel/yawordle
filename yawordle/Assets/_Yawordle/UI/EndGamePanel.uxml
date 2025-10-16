@@ -7,9 +7,9 @@
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
     
-    <ui:Style src="SettingsPanel.uss" />
+    <ui:Style src="EndGamePanel.uss" />
 
-    <ui:VisualElement name="end-game-panel" class="settings-panel">
+    <ui:VisualElement name="end-game-panel" class="end-game-panel">
         <ui:Label name="result-title" class="title" />
         <ui:Label name="info-text" class="info-text" />
         <ui:VisualElement class="button-row">
