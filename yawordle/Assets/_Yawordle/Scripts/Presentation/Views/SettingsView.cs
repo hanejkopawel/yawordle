@@ -51,8 +51,14 @@ namespace Yawordle.Presentation.Views
         /// </summary>
         private void PreparePanel()
         {
+            if (_uiSettings.SettingsPanel == null)
+            {
+                Debug.LogError("SettingsPanel VisualTreeAsset is not assigned in UISettings.");
+                return;
+            }
+            
             _settingsOverlayInstance = _uiSettings.SettingsPanel.Instantiate();
-            _settingsOverlayInstance.style.display = DisplayStyle.None;
+            _settingsOverlayInstance.AddToClassList("panel-container");
             _modalContainer.Add(_settingsOverlayInstance);
 
             // Find controls once and store their references.
@@ -64,7 +70,9 @@ namespace Yawordle.Presentation.Views
             _saveButton = _settingsOverlayInstance.Q<Button>("save-button");
             _cancelButton = _settingsOverlayInstance.Q<Button>("cancel-button");
 
+            _saveButton.clicked += OnSaveAndRestart;
             _cancelButton.clicked += ClosePanel;
+
         }
 
         private void OnLanguageChanged(ChangeEvent<string> evt) => _viewModel.SetLanguage(evt.newValue);
@@ -103,7 +111,6 @@ namespace Yawordle.Presentation.Views
             _languageDropdown.RegisterValueChangedCallback(OnLanguageChanged);
             _gameModeDropdown.RegisterValueChangedCallback(OnGameModeChanged);
             _wordLengthSlider.RegisterValueChangedCallback(OnWordLengthChanged);
-            _saveButton.clicked += OnSaveAndRestart;
             
             // Show the panel by switching the main containers' visibility.
             _modalContainer.style.display = DisplayStyle.Flex;
@@ -118,7 +125,6 @@ namespace Yawordle.Presentation.Views
             _languageDropdown.UnregisterValueChangedCallback(OnLanguageChanged);
             _gameModeDropdown.UnregisterValueChangedCallback(OnGameModeChanged);
             _wordLengthSlider.UnregisterValueChangedCallback(OnWordLengthChanged);
-            _saveButton.clicked -= OnSaveAndRestart;
             
             _settingsPanel.RemoveFromClassList("settings-panel--is-visible");
             _settingsPanel.RegisterCallback<TransitionEndEvent>(OnCloseTransitionEnd);

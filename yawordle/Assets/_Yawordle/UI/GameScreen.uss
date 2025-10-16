@@ -8,9 +8,9 @@
     --color-correct: #538d4e;
     --color-present: #b59f3b;
     --color-absent: #3a3a3c;
-    --font-size-title: 32px;
-    --font-size-tile: 32px;
-    --font-size-key: 16px;
+    --font-size-title: 50px;
+    --font-size-tile: 60px;
+    --font-size-key: 18px;
 }
 
 /* --- Style Podstawowe --- */
@@ -25,7 +25,7 @@
 /* --- Header --- */
 .header {
     width: 100%;
-    height: 60px;
+    height: 128px;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
@@ -44,8 +44,9 @@
     position: absolute;
     top: 50%;
     translate: 0 -50%;
-    width: 40px;
-    height: 40px;
+    width: 96px;
+    height: 96px;
+    padding:0;
     background-color: transparent;
     border-width: 0;
     -unity-background-scale-mode: scale-to-fit;
@@ -56,7 +57,7 @@
 }
 .icon-button--right {
     right: 10px;
-    background-image: url('project://database/Assets/_Yawordle/UI/Icons/help-circle.png');
+    background-image: url('project://database/Assets/_Yawordle/UI/Icons/help.png');
 }
 
 /* --- Kontenery Układu --- */
@@ -70,6 +71,13 @@
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.7);
+}
+
+.panel-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
 }
 
 .game-area {
@@ -139,7 +147,6 @@
 .keyboard-container {
     width: 100%;
     padding: 0 5px;
-    margin-bottom: 50px;
     flex-shrink: 0;
     align-items: stretch;
 }
@@ -156,7 +163,8 @@
 }
 
 .key {
-    min-width: 100px;
+    
+    width: 8.5%;
     flex-grow: 1;
     height: 150px;
     margin: 0 3px;
@@ -171,6 +179,14 @@
 
 .key--functional {
     width: 100px;
+}
+
+.key--backspace {
+    background-image: url('project://database/Assets/_Yawordle/UI/Icons/backspace.png');
+    background-size: 70% auto;
+    background-position: center;
+    font-size: 0;
+    color: transparent;
 }
 
 /* Styl dla pustego "spychacza" w klawiaturze */

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Bitbebop;
 using UnityEngine;
@@ -156,6 +157,8 @@ namespace Yawordle.Presentation.Views
                                 button.clicked += _viewModel.SubmitGuess;
                                 break;
                             case "BACKSPACE":
+                                button.text = string.Empty;
+                                button.AddToClassList("key--backspace");
                                 button.clicked += _viewModel.DeleteLetter;
                                 break;
                         }
