@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
 using Yawordle.Core;
 using Yawordle.Infrastructure;
 
@@ -53,12 +51,18 @@ namespace Yawordle.Presentation.ViewModels
             var layout = keyboardLayoutProvider.GetLayoutForLanguage(settingsService.CurrentSettings.Language);
             foreach (var row in layout.KeyRows)
             {
-                foreach (var key in row)
+                var tokens = row.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var token in tokens)
                 {
-                    if (!Keys.ContainsKey(key))
-                    {
-                        Keys.Add(key, new KeyViewModel(key));
-                    }
+                    var trimmed = token.Trim();
+                    // Skip functional keys; Keys dictionary should contain only letter keys.
+                    if (trimmed.Equals("ENTER", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("BACKSPACE", StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    if (trimmed.Length == 0) continue;
+                    // Add single-character letter key (handles EN and PL diacritics).
+                    var ch = char.ToUpperInvariant(trimmed[0]);
+                    if (!Keys.ContainsKey(ch)) 
+                        Keys.Add(ch, new KeyViewModel(ch));
                 }
             }
         }
@@ -81,10 +85,8 @@ namespace Yawordle.Presentation.ViewModels
         
         private void OnGuessUpdated(int attempt, string guess)
         {
-            for (int i = 0; i < WordLength; i++)
-            {
+            for (int i = 0; i < WordLength; i++) 
                 Tiles[attempt][i].Letter = (i < guess.Length) ? guess[i] : ' ';
-            }
         }
         
         private void OnGuessEvaluated(int attempt, LetterState[] states)

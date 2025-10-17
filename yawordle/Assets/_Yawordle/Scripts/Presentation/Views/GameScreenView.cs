@@ -139,19 +139,20 @@ namespace Yawordle.Presentation.Views
                 rowIndex++;
                 var rowElement = new VisualElement();
                 rowElement.AddToClassList("keyboard-row");
-                if(rowIndex == lastRowIndex)
+                if (rowIndex == lastRowIndex)
                     rowElement.AddToClassList("keyboard-row--last");
-                
+
                 var keys = rowString.Split(',');
                 foreach (var key in keys)
                 {
-                    
-                    if (key.Length > 1) // To jest klawisz funkcyjny (ENTER, BACKSPACE)
+                    var token = key.Trim(); 
+
+                    if (token.Length > 1) // Functional key (ENTER, BACKSPACE)
                     {
-                        var button = new Button { text = key };
+                        var button = new Button { text = token };
                         button.AddToClassList("key");
                         button.AddToClassList("key--functional");
-                        switch (key)
+                        switch (token)
                         {
                             case "ENTER":
                                 button.clicked += _viewModel.SubmitGuess;
@@ -165,9 +166,9 @@ namespace Yawordle.Presentation.Views
 
                         rowElement.Add(button);
                     }
-                    else // To jest rząd liter
+                    else // Letter keys (single character)
                     {
-                        foreach (var keyChar in key)
+                        foreach (var keyChar in token)
                         {
                             var keyButton = new Button { text = keyChar.ToString() };
                             keyButton.AddToClassList("key");
@@ -378,7 +379,7 @@ namespace Yawordle.Presentation.Views
             {
                 if (char.IsLetter(evt.character)) _viewModel.TypeLetter(evt.character);
                 else if (evt.keyCode == KeyCode.Backspace) _viewModel.DeleteLetter();
-                else if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter) _viewModel.SubmitGuess();
+                else if (evt.keyCode is KeyCode.Return or KeyCode.KeypadEnter) _viewModel.SubmitGuess();
             });
         }
         
