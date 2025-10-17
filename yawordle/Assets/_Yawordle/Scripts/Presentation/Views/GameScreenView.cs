@@ -9,6 +9,7 @@ using Yawordle.Presentation.ViewModels;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using Yawordle.Infrastructure;
+using Yawordle.Infrastructure.Localization;
 using Object = UnityEngine.Object;
 
 namespace Yawordle.Presentation.Views
@@ -18,6 +19,7 @@ namespace Yawordle.Presentation.Views
         private readonly GameBoardViewModel _viewModel;
         private readonly ISettingsService _settingsService;
         private readonly IKeyboardLayoutProvider _keyboardLayoutProvider;
+        private readonly ILocalizationService _loc;
 
         private SafeArea _screenContainer;
         private VisualElement _header;
@@ -34,11 +36,13 @@ namespace Yawordle.Presentation.Views
         public GameScreenView(
             GameBoardViewModel viewModel, 
             ISettingsService settingsService, 
-            IKeyboardLayoutProvider keyboardLayoutProvider)
+            IKeyboardLayoutProvider keyboardLayoutProvider,
+            ILocalizationService loc)
         {
             _viewModel = viewModel;
             _settingsService = settingsService;
             _keyboardLayoutProvider = keyboardLayoutProvider;
+            _loc = loc;
         }
 
         public void Start()
@@ -52,7 +56,11 @@ namespace Yawordle.Presentation.Views
             _boardContainer = root.Q<VisualElement>("game-board-container");
             _keyboardContainer = root.Q<VisualElement>("keyboard-container");
             _toastNotification = root.Q<Label>("toast-notification");
-
+            
+            var titleLabel = _header.Q<Label>(className: "title");
+            if (titleLabel != null)
+                titleLabel.text = _loc.GetString("UI", "title");
+            
             _boardContainer.focusable = true;
             _boardContainer.Focus();
 
@@ -289,11 +297,11 @@ namespace Yawordle.Presentation.Views
         {
             ShakeRow(attemptIndex);
 
-            string message = error switch
+            var message = error switch
             {
-                GuessValidationError.NotEnoughLetters => "Not enough letters",
-                GuessValidationError.NotInWordList => "Not in word list",
-                _ => "Unknown error"
+                GuessValidationError.NotEnoughLetters => _loc.GetString("Messages", "toast_not_enough_letters"),
+                GuessValidationError.NotInWordList => _loc.GetString("Messages", "toast_not_in_word_list"),
+                _ => _loc.GetString("Messages", "error_unknown")
             };
             ShowToast(message);
         }

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using VContainer.Unity;
+using Yawordle.Infrastructure.Localization;
 using Yawordle.Presentation.ViewModels;
 
 namespace Yawordle.Presentation.Views
@@ -11,6 +12,7 @@ namespace Yawordle.Presentation.Views
     {
         private readonly GameBoardViewModel _gameBoardViewModel;
         private readonly UISettings _uiSettings;
+        private readonly ILocalizationService _loc;
 
         private VisualElement _modalContainer;   // overlay z GameScreen (class="modal")
         private VisualElement _endGameContent;   // TemplateContainer (class="modal__content")
@@ -19,10 +21,11 @@ namespace Yawordle.Presentation.Views
         private Label _infoText;
         private Button _playAgainButton;
 
-        public EndGameView(GameBoardViewModel gameBoardViewModel, UISettings uiSettings)
+        public EndGameView(GameBoardViewModel gameBoardViewModel, UISettings uiSettings,  ILocalizationService loc)
         {
             _gameBoardViewModel = gameBoardViewModel;
             _uiSettings = uiSettings;
+            _loc = loc;
         }
 
         public void Start()
@@ -56,6 +59,7 @@ namespace Yawordle.Presentation.Views
             _infoText = _endGamePanel.Q<Label>("info-text");
             _playAgainButton = _endGamePanel.Q<Button>("play-again-button");
 
+            _playAgainButton.text = _loc.GetString("UI", "end_play_again");
             _playAgainButton.clicked += PlayAgain;
 
         }
@@ -74,15 +78,16 @@ namespace Yawordle.Presentation.Views
         private async UniTaskVoid ShowPanelAsync(bool isWin, string targetWord) 
         {
             
-            if (isWin) 
+            if (isWin)
             {
-                _resultTitle.text = "Congratulations!";
-                _infoText.text = "You guessed the word!";
-            } 
-            else 
+                _resultTitle.text = _loc.GetString("UI", "end_win_title");
+                _infoText.text = _loc.GetString("UI", "end_win_info");
+            }
+            else
             {
-                _resultTitle.text = "Game Over";
-                _infoText.text = $"The correct word was: {targetWord.ToUpper()}";
+                _resultTitle.text = _loc.GetString("UI", "end_lose_title");
+                var prefix = _loc.GetString("UI", "end_lose_info_prefix");
+                _infoText.text = $"{prefix} {targetWord.ToUpper()}";
             }
 
             _endGameContent.BringToFront();

@@ -3,6 +3,7 @@ using Yawordle.Core;
 using VContainer;
 using VContainer.Unity;
 using Yawordle.Infrastructure;
+using Yawordle.Infrastructure.Localization;
 using Yawordle.Presentation;
 using Yawordle.Presentation.Views;
 using Yawordle.Presentation.ViewModels;
@@ -26,6 +27,7 @@ namespace Yawordle.DI
             // Services that interact with external systems (UI, backend, file system).
             builder.Register<IKeyboardLayoutProvider, KeyboardLayoutProvider>(Lifetime.Singleton);
             builder.Register<IUgsService, UgsService>(Lifetime.Singleton);
+            builder.Register<UnityLocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
             builder.RegisterInstance(uiSettings);
             
             // --- ViewModels ---

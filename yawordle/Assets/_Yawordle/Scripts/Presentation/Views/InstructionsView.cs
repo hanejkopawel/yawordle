@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer.Unity;
 using Yawordle.Core;
+using Yawordle.Infrastructure.Localization;
 
 namespace Yawordle.Presentation.Views
 {
@@ -9,6 +10,7 @@ namespace Yawordle.Presentation.Views
     {
         private readonly ISettingsService _settingsService;
         private readonly UISettings _uiSettings;
+        private readonly ILocalizationService _loc;
 
         private VisualElement _modalContainer;
         private VisualElement _instructionsContent;
@@ -16,10 +18,11 @@ namespace Yawordle.Presentation.Views
         private Button _closeButton;
         private Button _openHelpButton;
 
-        public InstructionsView(ISettingsService settingsService, UISettings uiSettings)
+        public InstructionsView(ISettingsService settingsService, UISettings uiSettings, ILocalizationService loc)
         {
             _settingsService = settingsService;
             _uiSettings = uiSettings;
+            _loc = loc;
         }
 
         public void Start()
@@ -52,7 +55,14 @@ namespace Yawordle.Presentation.Views
             _instructionsContent.RegisterCallback<ClickEvent>(OnInstructionsBackdropClick);
 
             _closeButton = _instructionsPanel.Q<Button>("close-button");
+            _closeButton.text = _loc.GetString("UI", "instructions_got_it");
             _closeButton.clicked += ClosePanel;
+            
+            var title = _instructionsPanel.Q<Label>(className: "instructions-panel__title");
+            if (title != null) title.text = _loc.GetString("UI", "instructions_title");
+
+            var desc = _instructionsPanel.Q<Label>(className: "instructions-panel__description");
+            if (desc != null) desc.text = _loc.GetString("UI", "instructions_desc");
         }
         
         private void OnInstructionsBackdropClick(ClickEvent e) {
