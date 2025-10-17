@@ -1,0 +1,117 @@
+[
+  {
+    "title": "Hard Mode: enforce revealed hints in subsequent guesses",
+    "labels": ["feature", "gameplay-extension", "core-gameplay", "priority-medium"],
+    "body": "Implement a Hard Mode that enforces use of revealed information in all subsequent guesses.\n\nScope:\n- Enforce green letters: position must remain fixed\n- Enforce yellow letters: minimum counts must be respected across duplicates\n- Add validation messages for violations\n\nAcceptance Criteria:\n- Submissions violating Hard Mode rules are blocked with a localized message\n- Unit tests cover duplicate-letter edge cases\n"
+  },
+  {
+    "title": "Word Provider: Addressables + CCD language packs",
+    "labels": ["refactor", "architecture", "priority-high"],
+    "body": "Migrate dictionaries from Resources to Addressables, with CCD-hosted language packs for live updates.\n\nScope:\n- AddressablesWordProvider with async loading\n- Language Pack asset(s): keyboard layout + word lists per length\n- CCD pipeline + documentation for adding new languages post-release\n\nAcceptance Criteria:\n- Dictionaries load via Addressables; CCD update flows without app update\n- Clear docs: how to add a new language pack\n"
+  },
+  {
+    "title": "Interactive Tutorial (guided first session)",
+    "labels": ["feature", "ux", "priority-medium"],
+    "body": "Replace static instructions with a guided tutorial that highlights UI elements and steps through a sample turn.\n\nScope:\n- Scriptable steps (overlay + callouts)\n- Skip / replay support\n\nAcceptance Criteria:\n- First session shows tutorial, can be skipped and re-opened later\n"
+  },
+  {
+    "title": "Global Leaderboards (UGS)",
+    "labels": ["feature", "online", "backend", "priority-medium"],
+    "body": "Integrate UGS Leaderboards for Daily mode (fewest attempts; tie-break by time).\n\nScope:\n- Submit score on win in Daily\n- Leaderboard panel (top N + player rank)\n- Basic anti-abuse (server-side constraints, result sanity checks)\n\nAcceptance Criteria:\n- Scores visible across devices and users; consistent ordering\n"
+  },
+  {
+    "title": "Achievements (Google Play Games)",
+    "labels": ["feature", "gameplay-extension", "priority-low"],
+    "body": "Add a set of achievements (e.g., first win, 10 wins, 5-day streak, Hard Mode win) via Google Play Games.\n\nScope:\n- GPGS integration and IDs mapping\n- Trigger on relevant events\n\nAcceptance Criteria:\n- Achievements unlock and display correctly on Android\n"
+  },
+  {
+    "title": "Monetization (Ads): interstitials + optional rewarded",
+    "labels": ["feature", "monetization", "priority-low"],
+    "body": "Add monetization with minimal friction: interstitial after completed game (frequency capping), optional rewarded for a hint (future).\n\nScope:\n- Choose network (AdMob/LevelPlay)\n- Frequency capping and test device setup\n- Settings toggle to disable ads (dev only)\n\nAcceptance Criteria:\n- Ads displayed according to rules; no crashes or layout issues\n"
+  },
+  {
+    "title": "Analytics: expand event set and data layer",
+    "labels": ["liveops", "enhancement", "priority-medium"],
+    "body": "Build on minimal analytics: add a data layer + richer events for funnels and cohorts.\n\nScope:\n- Standardize event schema (context: lang, wordLength, mode, hardMode, attempts)\n- Add events: tutorial_start/end, share_click, leaderboard_open, theme_change\n- Basic privacy toggle and docs\n\nAcceptance Criteria:\n- Events visible in dashboard with consistent schema\n"
+  },
+  {
+    "title": "Cloud Save: sync stats and streak cross-device",
+    "labels": ["feature", "online", "backend", "priority-medium"],
+    "body": "Sync player statistics and daily streak using UGS Cloud Save.\n\nScope:\n- Serialize StatsData for cloud\n- Conflict resolution (last-write-wins or timestamp-based)\n\nAcceptance Criteria:\n- Stats and streak persist across reinstalls/devices for same player\n"
+  },
+  {
+    "title": "Remote Config: feature flags and A/B testing",
+    "labels": ["liveops", "backend", "architecture", "priority-medium"],
+    "body": "Control features remotely and run simple experiments.\n\nScope:\n- Feature flags (e.g., theme auto, hint button)\n- Remote parameters (e.g., daily word source fallback)\n- Safe defaults when offline\n\nAcceptance Criteria:\n- Flags/params can be switched without app update\n"
+  },
+  {
+    "title": "Localization: add new languages + keyboard layouts",
+    "labels": ["feature", "polish", "priority-medium"],
+    "body": "Extend localization beyond EN/PL and support language-specific keyboard rows/diacritics.\n\nScope:\n- Add at least 2 languages (e.g., ES, DE)\n- Provide dictionaries + keyboard layouts per language\n- Docs: how to contribute a language pack\n\nAcceptance Criteria:\n- Language can be switched; UI updates instantly (or on restart as designed)\n"
+  },
+  {
+    "title": "Visual Themes: high-contrast and colorblind-friendly palettes",
+    "labels": ["feature", "polish", "ux", "priority-low"],
+    "body": "Add accessibility-friendly theme presets with higher contrast and colorblind-safe hues.\n\nScope:\n- Tokens for high-contrast and colorblind modes\n- Toggle in Settings\n\nAcceptance Criteria:\n- Themes pass basic contrast checks; no illegible states\n"
+  },
+  {
+    "title": "Accessibility improvements: font scaling, focus order, hints",
+    "labels": ["polish", "ux", "priority-low"],
+    "body": "Improve accessibility with larger text options, better focus navigation, and textual hints.\n\nScope:\n- Font scale setting\n- Logical focus traversal order\n- Text alternatives for icon-only buttons\n\nAcceptance Criteria:\n- App usable with increased text size; focus order predictable\n"
+  },
+  {
+    "title": "Audio/Haptics: advanced controls and asset delivery",
+    "labels": ["feature", "polish", "priority-low"],
+    "body": "Add volume toggles, sound categories, and addressables for audio clips; refine haptic patterns.\n\nScope:\n- SFX mixer groups and settings\n- Addressables for audio (optional)\n- Refined haptic feedback patterns\n\nAcceptance Criteria:\n- Users can toggle/adjust audio; haptics are responsive, non-intrusive\n"
+  },
+  {
+    "title": "Offline-first: caching daily word and robust fallback",
+    "labels": ["architecture", "backend", "priority-medium"],
+    "body": "Ensure graceful offline behavior with a cached daily word and retry policy.\n\nScope:\n- Cache last fetched daily word + date\n- Retry/backoff when Cloud Code fails\n- UI indicator for offline mode\n\nAcceptance Criteria:\n- Daily playable offline (with last-known word) when server unreachable\n"
+  },
+  {
+    "title": "Crash reporting & diagnostics",
+    "labels": ["liveops", "technical-debt", "priority-medium"],
+    "body": "Integrate crash reporting (Unity Cloud Diagnostics or Firebase Crashlytics) and log breadcrumbs for key flows.\n\nAcceptance Criteria:\n- Crashes visible in dashboard with device/context info\n"
+  },
+  {
+    "title": "CI/CD: Unity Cloud Build + GitHub Actions",
+    "labels": ["technical-debt", "optimization", "priority-low"],
+    "body": "Automate builds and tests.\n\nScope:\n- GitHub Actions: unit tests + build artifacts (AAB)\n- Unity Cloud Build setup for Android\n\nAcceptance Criteria:\n- Successful CI pipeline on PR and main branch\n"
+  },
+  {
+    "title": "Tests: Core and PlayMode coverage",
+    "labels": ["technical-debt", "core-gameplay", "priority-medium"],
+    "body": "Add unit tests for Core (guess evaluation, duplicates, hard mode) and basic PlayMode tests for UI flows.\n\nAcceptance Criteria:\n- Coverage on critical paths; tests run in CI\n"
+  },
+  {
+    "title": "Store listing localization & ASO",
+    "labels": ["production", "documentation", "priority-low"],
+    "body": "Localize store listing (title, short/long description, screenshots) and apply basic ASO.\n\nAcceptance Criteria:\n- Localized listings published; consistent branding\n"
+  },
+  {
+    "title": "QA: device matrix and performance profiling",
+    "labels": ["optimization", "production", "priority-low"],
+    "body": "Establish a device test matrix and routine profiling.\n\nScope:\n- Low/mid/high Android devices\n- Record FPS, memory, GC spikes; address regressions\n\nAcceptance Criteria:\n- Profiling reports exist; obvious bottlenecks addressed\n"
+  },
+  {
+    "title": "Server-side result validation (basic anti-cheat)",
+    "labels": ["backend", "online", "core-gameplay", "priority-low"],
+    "body": "Add basic server-side validation for Daily results to reduce trivial spoofing.\n\nScope:\n- Cloud Code sanity checks (attempt count bounds, time window)\n- Optional: signed payload from server\n\nAcceptance Criteria:\n- Obvious cheats detected; no false positives in normal play\n"
+  },
+  {
+    "title": "In-app review prompt",
+    "labels": ["polish", "social", "production", "priority-low"],
+    "body": "Prompt users for a review after positive sessions.\n\nAcceptance Criteria:\n- Review dialog appears under configured conditions; does not nag excessively\n"
+  },
+  {
+    "title": "Shareable Results 2.0: image share with branding",
+    "labels": ["feature", "social", "polish", "priority-low"],
+    "body": "Upgrade from text-only to an image share (grid + brand) for social platforms.\n\nAcceptance Criteria:\n- Share intent attaches an image preview; layout looks clean on major apps\n"
+  },
+  {
+    "title": "Keyboard: diacritics and long-press behavior",
+    "labels": ["feature", "ux", "polish", "priority-low"],
+    "body": "Enhance the keyboard for languages with diacritics (where applicable) and consider long-press for variants.\n\nAcceptance Criteria:\n- Language-specific keys are ergonomic; no accidental inputs\n"
+  }
+]

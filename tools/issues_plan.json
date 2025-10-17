@@ -1,0 +1,80 @@
+[
+  {
+    "title": "Localization: Integrate Unity Localization package",
+    "labels": ["feature", "polish", "priority-medium"],
+    "status": "Todo",
+    "body": "Set up Unity Localization package and basic infrastructure.\n\nAcceptance Criteria:\n- Localization package installed and configured\n- String Tables created (UI, Messages)\n- Sample LocalizedString bound in one view\n- Dev docs: how to add new keys/translations\n"
+  },
+  {
+    "title": "Localization: Localize GameScreen UI (header, keyboard hints, toasts)",
+    "labels": ["feature", "polish", "priority-medium"],
+    "status": "Backlog",
+    "body": "Extract and localize all visible strings on the main game screen.\n\nScope:\n- Header title text\n- Toast messages (\"Not enough letters\", \"Not in word list\")\n- Any inline texts in GameScreen.uxml\n\nAcceptance Criteria:\n- EN/PL translations present\n- No hardcoded UI strings remain in GameScreen code/UXML\n"
+  },
+  {
+    "title": "Localization: Localize panels (Settings, Instructions, End Game)",
+    "labels": ["feature", "polish", "priority-medium"],
+    "status": "Backlog",
+    "body": "Localize all texts in modal panels.\n\nScope:\n- Settings panel labels and options\n- Instructions content\n- End Game panel (titles, messages, buttons)\n\nAcceptance Criteria:\n- EN/PL translations complete\n- No hardcoded strings in UXML/USS comments or code-behind\n"
+  },
+  {
+    "title": "Localization: Language selection in Settings (+persist & apply)",
+    "labels": ["feature", "polish", "priority-medium"],
+    "status": "Backlog",
+    "body": "Connect settings language dropdown to Unity Localization and persistence.\n\nAcceptance Criteria:\n- Changing language updates SelectedLocale\n- Language saved in settings JSON\n- On first launch, default to system language if supported\n"
+  },
+  {
+    "title": "Localization: Localize runtime messages (validation errors, end-game result, share text)",
+    "labels": ["feature", "polish", "priority-medium"],
+    "status": "Backlog",
+    "body": "Move runtime strings from code into String Tables.\n\nScope:\n- Guess validation errors\n- End-game messages (win/lose)\n- Future shareable result text template\n\nAcceptance Criteria:\n- All runtime messages pulled from localization tables\n"
+  },
+  {
+    "title": "Refactor Daily Word: use remote dictionaries in Cloud Code (backend)",
+    "labels": ["feature", "backend", "online", "priority-high"],
+    "status": "Backlog",
+    "body": "Refactor Cloud Code to fetch daily word from remote dictionaries (e.g., CCD/Remote Config) with deterministic selection.\n\nAcceptance Criteria:\n- Cloud Code loads answers list per language/length from a remote source\n- Deterministic selection preserved (dayOfYear % length)\n- Graceful fallback if remote is unavailable\n- Client API unchanged ({ word, date })\n"
+  },
+  {
+    "title": "Player Statistics (local): games, wins, streak, guess distribution",
+    "labels": ["feature", "core-gameplay", "priority-high"],
+    "status": "Backlog",
+    "body": "Track and persist player statistics locally.\n\nAcceptance Criteria:\n- Stats model & persistence service\n- Update on OnGameFinished (win/lose)\n- Simple stats modal (can be basic for 1.0)\n"
+  },
+  {
+    "title": "Sound Effects and Haptics",
+    "labels": ["feature", "polish", "priority-medium"],
+    "status": "Backlog",
+    "body": "Add SFX for key actions and basic haptics.\n\nScope:\n- Key press, submit, invalid guess (shake), flip, win/lose\n- Toggle in Settings\n\nAcceptance Criteria:\n- Works on Android devices; can be disabled by user\n"
+  },
+  {
+    "title": "Visual Themes: Light/Dark",
+    "labels": ["feature", "polish"],
+    "status": "Backlog",
+    "body": "Introduce Light/Dark theme via tokens.uss or theme style sheets.\n\nAcceptance Criteria:\n- Theme toggle in Settings (Light/Dark + optional System)\n- Colors and contrast verified for readability\n"
+  },
+  {
+    "title": "Shareable Results (emoji grid)",
+    "labels": ["feature", "social", "priority-high"],
+    "status": "Backlog",
+    "body": "Generate an emoji grid summary and copy/share via Android intent.\n\nAcceptance Criteria:\n- Format includes mode, attempts, and emoji grid\n- Share button in End Game panel\n"
+  },
+  {
+    "title": "Minimal Analytics (UGS)",
+    "labels": ["feature", "liveops", "priority-medium"],
+    "status": "Backlog",
+    "body": "Send a minimal set of analytics events for v1.0.\n\nEvents:\n- app_open, game_start, guess_submit/invalid, game_finish(win/lose, attempts, word_length, lang), settings_change\n"
+  },
+  {
+    "title": "Create App Icon and Store Graphics",
+    "labels": ["art", "production", "release-blocker"],
+    "status": "Backlog",
+    "body": "Prepare adaptive icon and Play Store graphics (screenshots, feature image).\n\nAcceptance Criteria:\n- Icon configured in Player Settings\n- Store assets exported and documented\n"
+  },
+  {
+    "title": "Optimize Performance and Build Size",
+    "labels": ["technical-debt", "optimization"],
+    "status": "Backlog",
+    "body": "Analyze performance and build output; apply standard Unity optimizations.\n\nAcceptance Criteria:\n- IL2CPP, stripping config reviewed\n- Address big allocations, reduce build size where easy wins exist\n"
+  }
+]

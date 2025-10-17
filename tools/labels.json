@@ -1,0 +1,263 @@
+[
+  {
+    "id": 9464997108,
+    "node_id": "LA_kwDOP_061s8AAAACNChk9A",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/architecture",
+    "name": "architecture",
+    "color": "b1b061",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997540,
+    "node_id": "LA_kwDOP_061s8AAAACNChmpA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/art",
+    "name": "art",
+    "color": "a13890",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997203,
+    "node_id": "LA_kwDOP_061s8AAAACNChlUw",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/backend",
+    "name": "backend",
+    "color": "e757dc",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9436608753,
+    "node_id": "LA_kwDOP_061s8AAAACMnc48Q",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/bug",
+    "name": "bug",
+    "color": "d73a4a",
+    "default": true,
+    "description": "Something isn't working"
+  },
+  {
+    "id": 9462301019,
+    "node_id": "LA_kwDOP_061s8AAAACM_9BWw",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/core-gameplay",
+    "name": "core-gameplay",
+    "color": "6fcbf0",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9436608759,
+    "node_id": "LA_kwDOP_061s8AAAACMnc49w",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/documentation",
+    "name": "documentation",
+    "color": "0075ca",
+    "default": true,
+    "description": "Improvements or additions to documentation"
+  },
+  {
+    "id": 9436608768,
+    "node_id": "LA_kwDOP_061s8AAAACMnc5AA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/duplicate",
+    "name": "duplicate",
+    "color": "cfd3d7",
+    "default": true,
+    "description": "This issue or pull request already exists"
+  },
+  {
+    "id": 9436608773,
+    "node_id": "LA_kwDOP_061s8AAAACMnc5BQ",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/enhancement",
+    "name": "enhancement",
+    "color": "a2eeef",
+    "default": true,
+    "description": "New feature or request"
+  },
+  {
+    "id": 9462303693,
+    "node_id": "LA_kwDOP_061s8AAAACM_9LzQ",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/feature",
+    "name": "feature",
+    "color": "25ebf6",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9465025953,
+    "node_id": "LA_kwDOP_061s8AAAACNCjVoQ",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/gameplay-extension",
+    "name": "gameplay-extension",
+    "color": "b99520",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9436608785,
+    "node_id": "LA_kwDOP_061s8AAAACMnc5EQ",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/good%20first%20issue",
+    "name": "good first issue",
+    "color": "7057ff",
+    "default": true,
+    "description": "Good for newcomers"
+  },
+  {
+    "id": 9436608782,
+    "node_id": "LA_kwDOP_061s8AAAACMnc5Dg",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/help%20wanted",
+    "name": "help wanted",
+    "color": "008672",
+    "default": true,
+    "description": "Extra attention is needed"
+  },
+  {
+    "id": 9436608790,
+    "node_id": "LA_kwDOP_061s8AAAACMnc5Fg",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/invalid",
+    "name": "invalid",
+    "color": "e4e669",
+    "default": true,
+    "description": "This doesn't seem right"
+  },
+  {
+    "id": 9464997346,
+    "node_id": "LA_kwDOP_061s8AAAACNChl4g",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/liveops",
+    "name": "liveops",
+    "color": "56ffc3",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997447,
+    "node_id": "LA_kwDOP_061s8AAAACNChmRw",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/monetization",
+    "name": "monetization",
+    "color": "b4154c",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997161,
+    "node_id": "LA_kwDOP_061s8AAAACNChlKQ",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/online",
+    "name": "online",
+    "color": "f5420b",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9465025880,
+    "node_id": "LA_kwDOP_061s8AAAACNCjVWA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/optimization",
+    "name": "optimization",
+    "color": "e0a8ce",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464996882,
+    "node_id": "LA_kwDOP_061s8AAAACNChkEg",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/polish",
+    "name": "polish",
+    "color": "60f712",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9462298236,
+    "node_id": "LA_kwDOP_061s8AAAACM_82fA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/priority-high",
+    "name": "priority-high",
+    "color": "913e2a",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9462310216,
+    "node_id": "LA_kwDOP_061s8AAAACM_9lSA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/priority-low",
+    "name": "priority-low",
+    "color": "c0bc9b",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9462309119,
+    "node_id": "LA_kwDOP_061s8AAAACM_9g_w",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/priority-medium",
+    "name": "priority-medium",
+    "color": "2b703e",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997578,
+    "node_id": "LA_kwDOP_061s8AAAACNChmyg",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/production",
+    "name": "production",
+    "color": "b782bb",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9436608796,
+    "node_id": "LA_kwDOP_061s8AAAACMnc5HA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/question",
+    "name": "question",
+    "color": "d876e3",
+    "default": true,
+    "description": "Further information is requested"
+  },
+  {
+    "id": 9462306559,
+    "node_id": "LA_kwDOP_061s8AAAACM_9W_w",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/refactor",
+    "name": "refactor",
+    "color": "2a36dd",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997692,
+    "node_id": "LA_kwDOP_061s8AAAACNChnPA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/release-blocker",
+    "name": "release-blocker",
+    "color": "b46dec",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997028,
+    "node_id": "LA_kwDOP_061s8AAAACNChkpA",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/social",
+    "name": "social",
+    "color": "c5a5a4",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464997283,
+    "node_id": "LA_kwDOP_061s8AAAACNChlow",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/technical-debt",
+    "name": "technical-debt",
+    "color": "898d48",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9464996971,
+    "node_id": "LA_kwDOP_061s8AAAACNChkaw",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/ux",
+    "name": "ux",
+    "color": "1048f9",
+    "default": false,
+    "description": ""
+  },
+  {
+    "id": 9436608799,
+    "node_id": "LA_kwDOP_061s8AAAACMnc5Hw",
+    "url": "https://api.github.com/repos/hanejkopawel/yawordle/labels/wontfix",
+    "name": "wontfix",
+    "color": "ffffff",
+    "default": true,
+    "description": "This will not be worked on"
+  }
+]
