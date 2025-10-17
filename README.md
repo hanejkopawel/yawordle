@@ -215,7 +215,7 @@ Scenes/
 
 ## License 📝
 
-- MIT (or your preferred license). See `LICENSE` for details.
+- MIT 
 
 ---
 
