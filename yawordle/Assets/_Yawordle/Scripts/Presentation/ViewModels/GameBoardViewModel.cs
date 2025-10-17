@@ -26,10 +26,9 @@ namespace Yawordle.Presentation.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGameFinished)));
             }
         }
-        
-        public const int MaxAttempts = 6;
+        public int MaxAttempts { get; }
+        public int WordLength { get; }
         public TileViewModel[][] Tiles { get; private set; }
-        public int WordLength { get; private set; }
         public Dictionary<char, KeyViewModel> Keys { get; } = new();
         private readonly IGameManager _gameManager;
         private int _currentAttempt;
@@ -38,6 +37,7 @@ namespace Yawordle.Presentation.ViewModels
         public GameBoardViewModel(ISettingsService settingsService, IGameManager gameManager, IKeyboardLayoutProvider keyboardLayoutProvider)
         {
             _gameManager = gameManager;
+            MaxAttempts = gameManager.MaxAttempts;
             WordLength = settingsService.CurrentSettings.WordLength;
             InitializeTiles();
             InitializeKeys(settingsService, keyboardLayoutProvider);

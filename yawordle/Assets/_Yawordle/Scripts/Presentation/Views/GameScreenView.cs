@@ -83,7 +83,7 @@ namespace Yawordle.Presentation.Views
             float tileWidth = firstTile.resolvedStyle.width;
             if (tileWidth <= 0) return;
 
-            for (int i = 0; i < GameBoardViewModel.MaxAttempts; i++)
+            for (int i = 0; i < _viewModel.MaxAttempts; i++)
             {
                 if (_tileElements[i] == null) continue;
                 for (int j = 0; j < _viewModel.WordLength; j++)
@@ -99,10 +99,10 @@ namespace Yawordle.Presentation.Views
         private void GenerateGrid()
         {
             _boardContainer.Clear();
-            _tileElements = new VisualElement[GameBoardViewModel.MaxAttempts][];
-            _tileLabels = new Label[GameBoardViewModel.MaxAttempts][];
+            _tileElements = new VisualElement[_viewModel.MaxAttempts][];
+            _tileLabels = new Label[_viewModel.MaxAttempts][];
 
-            for (int i = 0; i < GameBoardViewModel.MaxAttempts; i++)
+            for (int i = 0; i < _viewModel.MaxAttempts; i++)
             {
                 _tileElements[i] = new VisualElement[_viewModel.WordLength];
                 _tileLabels[i] = new Label[_viewModel.WordLength];
@@ -183,7 +183,7 @@ namespace Yawordle.Presentation.Views
         
         private void BindToViewModel()
         {
-            for (int i = 0; i < GameBoardViewModel.MaxAttempts; i++)
+            for (int i = 0; i < _viewModel.MaxAttempts; i++)
             {
                 for (int j = 0; j < _viewModel.WordLength; j++)
                 {
