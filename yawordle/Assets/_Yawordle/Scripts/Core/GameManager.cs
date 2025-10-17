@@ -13,10 +13,13 @@ namespace Yawordle.Core
 
         public string TargetWord => _targetWord;
         
+        public int MaxAttempts => MaxAttemptsConst;
+        public int CurrentAttempt => _currentAttempt;
+        
         private readonly ISettingsService _settingsService;
         private readonly IWordProvider _wordProvider;
 
-        private const int MaxAttempts = 6;
+        private const int MaxAttemptsConst = 6;
         private int _currentAttempt;
         private string _targetWord;
         private string _currentGuess = "";
