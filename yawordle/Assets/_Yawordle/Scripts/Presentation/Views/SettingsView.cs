@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 using VContainer;
 using VContainer.Unity;
 using Yawordle.Core;
+using Yawordle.Infrastructure.Localization;
 using Yawordle.Presentation.ViewModels;
 
 namespace Yawordle.Presentation.Views
@@ -12,6 +13,7 @@ namespace Yawordle.Presentation.Views
     {
         private readonly IObjectResolver _resolver;
         private readonly UISettings _uiSettings;
+        private readonly ILocalizationService _loc;
         private SettingsViewModel _viewModel;
 
         // Elements from GameScreen.uxml
@@ -28,10 +30,11 @@ namespace Yawordle.Presentation.Views
         private Button _saveButton;
         private Button _cancelButton;
 
-        public SettingsView(IObjectResolver resolver, UISettings uiSettings)
+        public SettingsView(IObjectResolver resolver, UISettings uiSettings, ILocalizationService loc)
         {
             _resolver = resolver;
             _uiSettings = uiSettings;
+            _loc = loc;
         }
 
         public void Start()
@@ -72,6 +75,9 @@ namespace Yawordle.Presentation.Views
             _saveButton = _settingsPanel.Q<Button>("save-button");
             _cancelButton = _settingsPanel.Q<Button>("cancel-button");
 
+            _saveButton.text = _loc.GetString("UI", "settings_save");
+            _cancelButton.text = _loc.GetString("UI", "settings_cancel");
+            
             _cancelButton.clicked += ClosePanel;
 
         }
@@ -79,7 +85,6 @@ namespace Yawordle.Presentation.Views
         private void OnSettingsBackdropClick(ClickEvent e) {
             if (!_settingsContent.ClassListContains("is-active")) return;
 
-            // jeśli klik był wewnątrz panelu – nie zamykaj
             if (e.target is VisualElement target && _settingsPanel.Contains(target)) return;
             ClosePanel();
         }

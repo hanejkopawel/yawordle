@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer.Unity;
 using Yawordle.Core;
+using Yawordle.Infrastructure.Localization;
 using Yawordle.Presentation.ViewModels; 
 
 namespace Yawordle.DI
@@ -12,19 +13,25 @@ namespace Yawordle.DI
         private readonly ISettingsService _settingsService;
         private readonly IWordProvider _wordProvider;
         private readonly IGameManager _gameManager;
+        private readonly ILocalizationService _localization; 
 
         public GameInitializer(
             ISettingsService settingsService, 
             IWordProvider wordProvider, 
-            IGameManager gameManager) 
+            IGameManager gameManager,
+            ILocalizationService localization) 
         {
             _settingsService = settingsService;
             _wordProvider = wordProvider;
             _gameManager = gameManager;
+            _localization = localization;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation)
         {
+            
+            await _localization.InitializeAsync();
+            
             string targetWord;
             if (_settingsService.CurrentSettings.Mode == GameMode.Daily)
             {
