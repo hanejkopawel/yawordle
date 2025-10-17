@@ -1,71 +1,235 @@
-# Yawordle - A Modern Word Puzzle Game
+# Yawordle — A Modern Word Puzzle Game for Mobile 🧩📱
 
-![Yawordle Gameplay Screenshot](https://via.placeholder.com/800x450.png?text=Gameplay+Screenshot+Here)
-<!-- TODO: Zastąp powyższy link zrzutem ekranu z Twojej gry! -->
+Yet Another Wordle, crafted with clean architecture, smooth UI Toolkit UX, and optional backend integration via Unity Gaming Services.
 
-**Yawordle** (Yet Another Wordle) is a polished and feature-rich word puzzle game built with Unity. This project serves as a portfolio piece to demonstrate modern development practices for mobile games, including clean architecture, responsive UI, and backend integration. The game is designed to be highly flexible, supporting multiple languages and variable word lengths.
+- Engine: Unity 6000.2.4f1
+- Platform: Android (portrait-only)
+- UI: UI Toolkit + PrimeTween animations
+- DI: VContainer
+- Async: UniTask
 
-## 🌟 Key Features
-
-*   **Dynamic Word Length:** Unlike the original, Yawordle allows players to choose the word length (from 4 to 7 letters), which also serves as a difficulty setting.
-*   **Multi-language Support:** The game is fully localized (UI and dictionaries) for English and Polish, with an architecture ready to support more languages.
-*   **Two Game Modes:**
-    *   **Daily Challenge:** A single, shared puzzle for everyone in the world each day, powered by a secure server-side logic.
-    *   **Unlimited Mode:** Play as many puzzles as you want for endless practice.
-*   **Responsive UI:** Built with Unity's UI Toolkit, the interface gracefully adapts to various screen sizes and aspect ratios, from phones to tablets.
-*   **Online Leaderboards:** Compete with other players worldwide! Separate leaderboards are maintained for each game mode, language, and word length combination.
-
-## 🛠️ Tech Stack & Architecture
-
-This project was built with a strong focus on clean, scalable, and testable code, utilizing modern tools and patterns.
-
-### Core Technologies
-*   **Engine:** Unity 6.2+ 
-*   **UI:** UI Toolkit (for a modern, data-driven UI approach)
-*   **Asynchronous Code:** UniTask (for high-performance, allocation-free async/await)
-*   **Animations:** PrimeTween (for efficient and powerful UI animations)
-*   **Dependency Injection:** VContainer (for robust decoupling and improved testability)
-
-### Architecture
-The project follows a **Model-View-ViewModel (MVVM)** pattern to ensure a clear separation of concerns:
-
-*   **Model:** The core game logic. Contains services like `GameManager`, `WordProvider`, and `SettingsService`. It is pure C# and has no knowledge of Unity's UI.
-*   **ViewModel:** The presentation logic. It prepares data from the Model for the View and handles user interactions via commands. Examples include `GameBoardViewModel` and `SettingsViewModel`.
-*   **View:** The UI layer, built with UI Toolkit. It is responsible only for displaying what the ViewModel tells it to. The Views are "dumb" and simply bind to ViewModel properties.
-
-### Backend Services (Unity Gaming Services)
-*   **Authentication:** Anonymous player authentication to identify users for leaderboards.
-*   **Cloud Code:** Server-side logic to securely provide the "Word of the Day," preventing client-side cheating by changing the device's date.
-*   **Leaderboards:** Secure submission and retrieval of player scores.
-
-## 🚀 How to Run the Project
-
-1.  **Clone the repository:**
-
-    ```bash
-        # Make sure you have Git LFS installed to pull large files correctly.
-    git clone https://github.com/hanejkopawel/yawordle.git
-    ```
-    
-2.  **Open in Unity:**
-    *   Open the project using Unity Hub (version 6.2 or newer recommended).
-    *   The editor will automatically resolve all the required packages (VContainer, UniTask, etc.).
-3.  **Configure Unity Gaming Services (Optional):**
-    *   To run with backend features, you will need to link the project to your own UGS organization in `Edit -> Project Settings -> Services`.
-    *   You will need to deploy the Cloud Code script provided in the project.
-4.  **Run the Game:**
-    *   Open the `MainScene` from the `Scenes` folder.
-    *   Press the Play button in the editor.
-
-## 📜 Future Development Ideas
-
-This project is a solid foundation that can be extended with more features:
-*   [ ] Additional languages and dictionaries.
-*   [ ] Hard mode (requiring revealed hints to be used in subsequent guesses).
-*   [ ] Player statistics and achievements.
-*   [ ] Friends system and social leaderboards.
-*   [ ] Theming options (e.g., light/dark mode).
+![Gameplay Screenshot](docs/screenshots/gameplay.png)
+<!-- Tip: Replace the path above with your actual screenshot or GIF -->
 
 ---
 
-*This project was created by Paweł Hanejko. Feel free to browse the code to see the architecture and implementation details.*
+## Table of Contents
+- [Features](#features-)
+- [Tech Stack & Architecture](#tech-stack--architecture-️)
+- [Project Structure](#project-structure-)
+- [Getting Started](#getting-started-)
+- [Backend (optional)](#backend-optional-)
+- [How It Works](#how-it-works-)
+- [Roadmap](#roadmap-)
+- [Contributing](#contributing-)
+- [License](#license-)
+- [Acknowledgements](#acknowledgements-)
+- [Known Issues](#known-issues-️)
+
+---
+
+## Features 🎯
+- Two Game Modes
+  - Daily: Server-driven “Word of the Day” (Unity Cloud Code) with offline fallback
+  - Unlimited: Endless practice with local dictionaries
+- Multi-language dictionaries: English and Polish
+- Responsive, touch-first UI (UI Toolkit + Safe Area)
+- Smooth animations: tile flips, invalid-guess shake, toasts (PrimeTween)
+- Settings: language and game mode
+- Note: word length is currently fixed at 5 (difficulty by length is not used)
+
+---
+
+## Tech Stack & Architecture 🏗️
+
+- Core Technologies
+  - UI Toolkit: modern, responsive UI for mobile
+  - PrimeTween: performant UI animations and sequences
+  - VContainer: dependency injection with clear lifetimes
+  - UniTask: allocation-friendly async/await for Unity
+  - Unity Gaming Services: Authentication, Cloud Code (optional), Analytics (planned minimal set)
+
+- Architecture (MVVM-style)
+  - Model (Core)
+    - Game rules and contracts (IGameManager, IWordProvider, ISettingsService)
+    - GameManager validates guesses and evaluates letters
+  - ViewModel (Presentation)
+    - GameBoardViewModel, TileViewModel, KeyViewModel, SettingsViewModel
+    - Prepares UI data and reacts to GameManager events
+  - View (UI Toolkit)
+    - “Dumb” Views: build UI, bind to ViewModels, play animations
+
+---
+
+## Project Structure 📦
+```
+Assets/_Yawordle
+  Scripts/
+    Core/            # game logic and interfaces (UI-agnostic)
+    Infrastructure/  # UGS, JSON save, Resources word provider, keyboard layouts
+    DI/              # VContainer LifetimeScope and startup
+    Presentation/
+      ViewModels/    # MVVM layer for UI
+      Views/         # UI Toolkit views, binders, animations
+  Resources/
+    Dictionaries/
+      solutions_en_5.txt
+      guesses_en_5.txt
+      solutions_pl_5.txt
+      guesses_pl_5.txt
+  UI/
+    Screens/         # GameScreen (UXML/USS)
+    Panels/          # Settings, Instructions, EndGame (UXML/USS)
+    Components/      # Modal helpers
+    Themes/          # tokens.uss (colors, sizes)
+Scenes/
+  MainScene.unity
+```
+
+---
+
+## Getting Started 🚀
+
+- Prerequisites
+  - Unity 6000.2.4f1 (or newer 6.x)
+  - Git LFS recommended for large assets
+
+- Clone
+  ```bash
+  git clone https://github.com/hanejkopawel/yawordle.git
+  ```
+
+- Open in Unity
+  - Open via Unity Hub
+  - Load Assets/Scenes/MainScene.unity
+  - Press Play
+
+- Platform & UI
+  - Android, portrait-only
+  - Panel Settings: Scale With Screen Size, reference 1080x1920, Match = Width (0)
+
+---
+
+## Backend (optional) ☁️
+
+- Unity Gaming Services
+  - Link your project in Edit → Project Settings → Services
+  - Enable Authentication and Cloud Code
+
+- Cloud Code (JavaScript)
+  - Create a function named `getWordOfTheDay`
+  - The client sends: `{ language, wordLength }`
+  - The function returns: `{ word, date }`
+
+  Example script:
+  ```js
+  const _ = require('lodash-4.17');
+
+  module.exports = async ({ params, context, logger }) => {
+    const language = params.language || 'en';
+    const wordLength = params.wordLength || 5;
+
+    const dictionaries = {
+      'en_5': ['UNITY','CLOUD','PROXY','GRIDS','ALPHA','BRAVO','HOTEL'],
+      'pl_5': ['CHMURA','KODER','SKRYPT','PANEL','ALFABET','GRACZ'],
+      'en_4': ['CODE','GAME','TEST','VIEW'],
+      'pl_4': ['KODU','GRAJ','TEST'],
+      'en_6': ['ACTIVE','BUTTON','RENDER','SCRIPT'],
+      'pl_6': ['SKRYPT','WIDOKU','PANELU','GRACZA'],
+    };
+
+    const key = `${language}_${wordLength}`;
+    const wordList = dictionaries[key] || dictionaries['en_5'];
+    if (!wordList?.length) {
+      logger.error(`Word list not found or empty for key: ${key}`);
+      throw new Error('Word list not found.');
+    }
+
+    const now = new Date();
+    const serverDateUTC = now.toISOString().slice(0, 10);
+    const startOfYear = new Date(now.getUTCFullYear(), 0, 0);
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor((now - startOfYear) / oneDay);
+    const word = wordList[dayOfYear % wordList.length];
+
+    logger.info(`Selected word: ${word} for ${serverDateUTC}`);
+    return { word, date: serverDateUTC };
+  };
+  ```
+
+- Client behavior
+  - Daily Mode: fetches word from Cloud Code; falls back to a local random solution if unavailable
+  - Unlimited Mode: local random solution
+
+---
+
+## How It Works 🔧
+
+- Startup
+  - VContainer wires Core/Infrastructure/Presentation
+  - GameInitializer selects the target word (Daily via Cloud Code or Unlimited via local lists)
+
+- Gameplay
+  - Player inputs letters (UI keyboard or hardware keyboard)
+  - GameManager validates guesses and evaluates letters in two passes (Correct/Present/Absent)
+  - ViewModels update Tile/Key states; Views play flip/shake/toast animations
+  - EndGame modal appears on win/lose
+
+- Data
+  - Settings stored as JSON (persistentDataPath)
+  - Dictionaries loaded from Resources (planned: Addressables + CCD)
+
+---
+
+## Roadmap 🧭
+
+- 1.0 (Play Store-ready)
+  - [ ] Dynamic backend for daily word (Cloud Code, remote dictionaries)
+  - [ ] Full UI localization (EN/PL)
+  - [ ] Player statistics (local)
+  - [ ] Sound effects and basic haptics
+  - [ ] Light/Dark themes
+  - [ ] Shareable results
+  - [ ] Minimal analytics (UGS)
+  - [ ] App icon and store graphics
+
+- 1.1+
+  - [ ] Hard Mode (use revealed hints in subsequent guesses)
+  - [ ] Addressables/CCD word packs (easy language updates post-release)
+  - [ ] Interactive tutorial
+  - [ ] Global leaderboards (UGS)
+  - [ ] Achievements (Google Play Games)
+  - [ ] Ads (TBD)
+  - [ ] Performance and build size optimization
+
+---
+
+## Contributing 🤝
+
+- Code Style
+  - MVVM-style separation
+  - Prefer async with UniTask in Unity layers
+  - Keep Core minimal and UI-agnostic
+
+---
+
+## License 📝
+
+- MIT (or your preferred license). See `LICENSE` for details.
+
+---
+
+## Acknowledgements 💐
+
+- UniTask (Cysharp)
+- VContainer (hadashiA)
+- PrimeTween (Kyrylo Kuzyk)
+- UI Toolkit Safe Area (Bitbebop)
+
+---
+
+## Known Issues ⚠️
+
+- Word length is currently fixed at 5
+- Dictionaries are loaded from Resources (planned: Addressables/CCD)
+- Initial Cloud Code sample uses a static list (to be replaced by remote dictionaries)
