@@ -184,8 +184,8 @@ Scenes/
 ## Roadmap 🧭
 
 - 1.0 (Play Store-ready)
+  - [x] Full UI localization (EN/PL)
   - [ ] Dynamic backend for daily word (Cloud Code, remote dictionaries)
-  - [ ] Full UI localization (EN/PL)
   - [ ] Player statistics (local)
   - [ ] Sound effects and basic haptics
   - [ ] Light/Dark themes
