@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -10,6 +11,8 @@ namespace Yawordle.Infrastructure.Localization
     public sealed class UnityLocalizationService : ILocalizationService
     {
         public string CurrentLanguage { get; private set; } = "en";
+        public bool IsReady { get; private set; }
+        public event Action Initialized;
         public event Action<string> LanguageChanged;
 
         private readonly ISettingsService _settings;
@@ -21,7 +24,8 @@ namespace Yawordle.Infrastructure.Localization
 
         public async UniTask InitializeAsync()
         {
-            // Ensure Localization system is initialized before use.
+            if (IsReady) return;
+
             try
             {
                 await LocalizationSettings.InitializationOperation.Task;
@@ -31,26 +35,25 @@ namespace Yawordle.Infrastructure.Localization
                 Debug.LogError($"Localization initialization failed: {e.Message}");
             }
 
-            // Pick saved or system language.
+            // Pick saved or system language
             var saved = _settings.CurrentSettings.Language;
             if (!TryFindLocale(saved, out var locale))
             {
                 var system = Application.systemLanguage.ToString().ToLowerInvariant();
                 if (!TryFindLocale(system, out locale))
                 {
-                    TryFindLocale("en", out locale); // ultimate fallback
+                    TryFindLocale("en", out locale); // fallback
                 }
             }
 
             if (locale != null)
             {
                 LocalizationSettings.SelectedLocale = locale;
-                CurrentLanguage = locale.Identifier.Code; // e.g. "en", "pl"
+                CurrentLanguage = locale.Identifier.Code;
             }
-            else
-            {
-                CurrentLanguage = "en";
-            }
+
+            IsReady = true;
+            Initialized?.Invoke();
         }
 
         public async UniTask SetLanguageAsync(string languageCode)
@@ -58,26 +61,24 @@ namespace Yawordle.Infrastructure.Localization
             if (string.IsNullOrWhiteSpace(languageCode))
                 return;
 
-            if (TryFindLocale(languageCode, out var locale))
+            if (!TryFindLocale(languageCode, out var locale))
             {
-                LocalizationSettings.SelectedLocale = locale;
-                CurrentLanguage = locale.Identifier.Code;
-
-                // Persist in settings
-                var s = _settings.CurrentSettings;
-                s.Language = CurrentLanguage;
-                await _settings.SaveSettingsAsync(s);
-
-                LanguageChanged?.Invoke(CurrentLanguage);
+                Debug.LogWarning($"Locale not found: '{languageCode}'");
+                return;
             }
-            else
-            {
-                Debug.LogWarning($"Locale not found for code '{languageCode}'.");
-            }
+
+            LocalizationSettings.SelectedLocale = locale;
+            CurrentLanguage = locale.Identifier.Code;
+
+            var s = _settings.CurrentSettings;
+            s.Language = CurrentLanguage;
+            await _settings.SaveSettingsAsync(s);
+            LanguageChanged?.Invoke(CurrentLanguage);
         }
 
         public string GetString(string table, string entry)
         {
+            if (!IsReady) return entry; // avoid mixed UI before init
             if (string.IsNullOrEmpty(table) || string.IsNullOrEmpty(entry))
                 return entry ?? string.Empty;
 
@@ -87,9 +88,23 @@ namespace Yawordle.Infrastructure.Localization
             }
             catch
             {
-                // When table/entry missing or not yet ready, return key to avoid blank UI.
                 return entry;
             }
+        }
+
+        public IReadOnlyList<LanguageInfo> GetAvailableLanguages()
+        {
+            var list = new List<LanguageInfo>();
+            var locales = LocalizationSettings.AvailableLocales?.Locales;
+            if (locales == null) return list;
+
+            foreach (var loc in locales)
+            {
+                var code = loc.Identifier.Code;
+                var display = string.IsNullOrWhiteSpace(loc.LocaleName) ? code : loc.LocaleName;
+                list.Add(new LanguageInfo(code, display));
+            }
+            return list;
         }
 
         private static bool TryFindLocale(string code, out Locale locale)
@@ -97,12 +112,10 @@ namespace Yawordle.Infrastructure.Localization
             locale = null;
             if (string.IsNullOrWhiteSpace(code)) return false;
 
-            // Normalize common variants, e.g. "pl-PL" => "pl"
             var id = new LocaleIdentifier(code);
             locale = LocalizationSettings.AvailableLocales.GetLocale(id);
             if (locale != null) return true;
 
-            // Try two-letter language without region
             var shortCode = code.Length >= 2 ? code[..2].ToLowerInvariant() : code.ToLowerInvariant();
             locale = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier(shortCode));
             return locale != null;

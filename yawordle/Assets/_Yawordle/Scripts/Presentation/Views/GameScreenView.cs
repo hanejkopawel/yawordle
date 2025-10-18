@@ -57,9 +57,11 @@ namespace Yawordle.Presentation.Views
             _keyboardContainer = root.Q<VisualElement>("keyboard-container");
             _toastNotification = root.Q<Label>("toast-notification");
             
-            var titleLabel = _header.Q<Label>(className: "title");
-            if (titleLabel != null)
-                titleLabel.text = _loc.GetString("UI", "title");
+            if (_loc.IsReady) ApplyLocalizedTexts();
+            else _loc.Initialized += ApplyLocalizedTexts;
+            
+            _loc.LanguageChanged += _ => ApplyLocalizedTexts();
+            
             
             _boardContainer.focusable = true;
             _boardContainer.Focus();
@@ -72,12 +74,18 @@ namespace Yawordle.Presentation.Views
             BindToViewModel();
             BindKeyboardInput();
         }
-
+        
+        private void ApplyLocalizedTexts()
+        {
+            var titleLabel = _header?.Q<Label>(className: "title");
+            if (titleLabel != null)
+                titleLabel.text = _loc.GetString("UI", "title");
+        }
+        
         private void OnScreenGeometryChanged(GeometryChangedEvent evt)
         {
             UpdateTileSize();
         }
-
 
         /// <summary>
         /// Enforces a square aspect ratio for the tiles by setting their height
