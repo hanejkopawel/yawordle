@@ -18,7 +18,7 @@
     --font-size-title: 32px;
     --font-size-subtitle: 20px;
     --font-size-body: 16px;
-    --font-size-tile: 32px;
+    --font-size-tile: 72px;
     --font-size-key: 18px;
 
     /* --- Spacing --- */
