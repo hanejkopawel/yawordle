@@ -146,7 +146,7 @@ The "Daily" mode is powered by a robust **JavaScript Cloud Code function** that 
 
 ## License 📝
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**.
 
 ---
 
