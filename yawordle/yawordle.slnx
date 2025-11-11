@@ -1,0 +1,8 @@
+﻿<Solution>
+  <Project Path="Yawordle.Core.csproj" />
+  <Project Path="Yawordle.Presentation.csproj" />
+  <Project Path="Yawordle.Infrastructure.csproj" />
+  <Project Path="Yawordle.Editor.csproj" />
+  <Project Path="Yawordle.DI.csproj" />
+  <Project Path="PrimeTween.Installer.csproj" />
+</Solution>
