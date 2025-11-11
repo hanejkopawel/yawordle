@@ -1,15 +1,15 @@
 # Yawordle — A Modern Word Puzzle Game for Mobile 🧩📱
 
-Yet Another Wordle, crafted with clean architecture, smooth UI Toolkit UX, and optional backend integration via Unity Gaming Services.
+Yet Another Wordle, crafted with **clean architecture**, a smooth **UI Toolkit** user experience, and optional backend integration via **Unity Gaming Services**. This project serves as a portfolio piece demonstrating best practices in modern Unity development.
 
-- Engine: Unity 6000.2.4f1
-- Platform: Android (portrait-only)
-- UI: UI Toolkit + PrimeTween animations
-- DI: VContainer
-- Async: UniTask
+- **Engine**: Unity 6000.2
+- **Platform**: Android
+- **UI**: UI Toolkit + PrimeTween animations
+- **Architecture**: Clean Architecture with MVVM
+- **DI Container**: VContainer
+- **Async**: UniTask
 
 ![Gameplay Screenshot](docs/screenshots/gameplay.png)
-<!-- Tip: Replace the path above with your actual screenshot or GIF -->
 
 ---
 
@@ -18,46 +18,45 @@ Yet Another Wordle, crafted with clean architecture, smooth UI Toolkit UX, and o
 - [Tech Stack & Architecture](#tech-stack--architecture-️)
 - [Project Structure](#project-structure-)
 - [Getting Started](#getting-started-)
-- [Backend (optional)](#backend-optional-)
+- [Backend Deep Dive](#backend-deep-dive--cloud-code-)
 - [How It Works](#how-it-works-)
 - [Roadmap](#roadmap-)
-- [Contributing](#contributing-)
 - [License](#license-)
 - [Acknowledgements](#acknowledgements-)
-- [Known Issues](#known-issues-️)
 
 ---
 
 ## Features 🎯
-- Two Game Modes
-  - Daily: Server-driven “Word of the Day” (Unity Cloud Code) with offline fallback
-  - Unlimited: Endless practice with local dictionaries
-- Multi-language dictionaries: English and Polish
-- Responsive, touch-first UI (UI Toolkit + Safe Area)
-- Smooth animations: tile flips, invalid-guess shake, toasts (PrimeTween)
-- Settings: language and game mode
-- Note: word length is currently fixed at 5 (difficulty by length is not used)
+- **Two Game Modes**:
+  - **Daily**: Server-driven “Word of the Day” powered by Unity Cloud Code, with robust offline fallback.
+  - **Unlimited**: Endless practice with local dictionaries.
+- **Multi-language Support**: Fully localized for English and Polish, with an architecture ready for more languages.
+- **Modern & Responsive UI**: Built entirely with UI Toolkit, featuring a Safe Area component and a scalable design system (`tokens.uss`).
+- **"Juicy" Animations**: Smooth tile flips, invalid-guess shakes, and non-intrusive toast notifications, all powered by PrimeTween.
+- **Configurable Gameplay**: In-game settings panel to change language and game mode.
 
 ---
 
 ## Tech Stack & Architecture 🏗️
 
-- Core Technologies
-  - UI Toolkit: modern, responsive UI for mobile
-  - PrimeTween: performant UI animations and sequences
-  - VContainer: dependency injection with clear lifetimes
-  - UniTask: allocation-friendly async/await for Unity
-  - Unity Gaming Services: Authentication, Cloud Code (optional), Analytics (planned minimal set)
+This project is a practical implementation of **Clean Architecture** principles, adapted for a Unity environment and combined with the **MVVM** pattern for the UI.
 
-- Architecture (MVVM-style)
-  - Model (Core)
-    - Game rules and contracts (IGameManager, IWordProvider, ISettingsService)
-    - GameManager validates guesses and evaluates letters
-  - ViewModel (Presentation)
-    - GameBoardViewModel, TileViewModel, KeyViewModel, SettingsViewModel
-    - Prepares UI data and reacts to GameManager events
-  - View (UI Toolkit)
-    - “Dumb” Views: build UI, bind to ViewModels, play animations
+```
++-------------------------------------------------+
+|               Presentation (MVVM)               |  <- UI Layer (UI Toolkit, Views, ViewModels)
+|-------------------------------------------------|
+|               Infrastructure                    |  <- "Dirty" Details (UGS, File I/O, Unity APIs)
+|-------------------------------------------------|
+|                     Core                        |  <- Pure Game Logic (Unity-agnostic)
++-------------------------------------------------+
+|               DI (VContainer)                   |  <- Composition Root
++-------------------------------------------------+
+```
+
+- **Core**: Contains pure, platform-agnostic game logic and interfaces (`IGameManager`, `IWordProvider`). It has no dependencies on Unity, making it highly testable and portable.
+- **Infrastructure**: Implements the Core interfaces. This is where all platform-specific code lives, such as saving settings to JSON, loading dictionaries from `Resources`, and communicating with Unity Gaming Services.
+- **Presentation (MVVM)**: The UI layer. "Dumb" Views (UXML/USS) are controlled by ViewModels, which adapt data from the Core layer for presentation. This separation ensures that game logic knows nothing about the UI.
+- **VContainer**: Acts as the Composition Root, wiring up all dependencies with clearly defined lifetimes (`Singleton`, `Transient`), ensuring a loosely coupled and maintainable codebase.
 
 ---
 
@@ -65,171 +64,97 @@ Yet Another Wordle, crafted with clean architecture, smooth UI Toolkit UX, and o
 ```
 Assets/_Yawordle
   Scripts/
-    Core/            # game logic and interfaces (UI-agnostic)
-    Infrastructure/  # UGS, JSON save, Resources word provider, keyboard layouts
-    DI/              # VContainer LifetimeScope and startup
+    Core/            # Game logic and interfaces (UI-agnostic)
+    Infrastructure/  # UGS, JSON services, ResourceWordProvider
+    DI/              # VContainer LifetimeScope and GameInitializer
     Presentation/
-      ViewModels/    # MVVM layer for UI
-      Views/         # UI Toolkit views, binders, animations
+      ViewModels/    # MVVM layer connecting Core to Views
+      Views/         # C# controllers for UI Toolkit Views
   Resources/
-    Dictionaries/
-      solutions_en_5.txt
-      guesses_en_5.txt
-      solutions_pl_5.txt
-      guesses_pl_5.txt
+    Dictionaries/    # Local word lists for Unlimited mode
   UI/
     Screens/         # GameScreen (UXML/USS)
-    Panels/          # Settings, Instructions, EndGame (UXML/USS)
-    Components/      # Modal helpers
-    Themes/          # tokens.uss (colors, sizes)
-Scenes/
-  MainScene.unity
+    Panels/          # Reusable modals: Settings, Instructions, EndGame
+    Components/      # Shared components like modal styles
+    Themes/          # tokens.uss: The single source of truth for design
 ```
 
 ---
 
 ## Getting Started 🚀
 
-- Prerequisites
-  - Unity 6000.2.4f1 (or newer 6.x)
-  - Git LFS recommended for large assets
+- **Prerequisites**: Unity 6000.2 or newer.
+- **Clone**: `git clone https://github.com/hanejkopawel/yawordle.git`
+- **Open**: Open the project via Unity Hub, load `Assets/Scenes/MainScene.unity`, and press Play.
 
-- Clone
-  ```bash
-  git clone https://github.com/hanejkopawel/yawordle.git
-  ```
-
-- Open in Unity
-  - Open via Unity Hub
-  - Load Assets/Scenes/MainScene.unity
-  - Press Play
-
-- Platform & UI
-  - Android, portrait-only
-  - Panel Settings: Scale With Screen Size, reference 1080x1920, Match = Width (0)
+The UI is configured for portrait mode using `Scale With Screen Size` (reference 1080x1920, Match Width).
 
 ---
 
-## Backend (optional) ☁️
+## Backend Deep Dive (Cloud Code) ☁️
 
-- Unity Gaming Services
-  - Link your project in Edit → Project Settings → Services
-  - Enable Authentication and Cloud Code
+The "Daily" mode is powered by a robust **JavaScript Cloud Code function** that demonstrates several advanced concepts.
 
-- Cloud Code (JavaScript)
-  - Create a function named `getWordOfTheDay`
-  - The client sends: `{ language, wordLength }`
-  - The function returns: `{ word, date }`
+- **Function Name**: `getWordOfTheDay`
+- **Client Sends**: `{ language, wordLength }`
+- **Server Responds**: `{ word, date, dictVersion }`
 
-  Example script:
-  ```js
-  const _ = require('lodash-4.17');
+### Key Features of the Cloud Script:
 
-  module.exports = async ({ params, context, logger }) => {
-    const language = params.language || 'en';
-    const wordLength = params.wordLength || 5;
+1.  **Remote Dictionaries**: The script fetches word lists from `answers.json` files hosted on GitHub Pages, making it easy to update dictionaries without a new app build.
+2.  **Server-Side Caching**: It uses an in-memory cache with a 1-hour TTL to minimize HTTP requests to the dictionary source, ensuring scalability and low latency.
+3.  **Deterministic Selection**: The word of the day is chosen based on the day of the year, guaranteeing all players get the same word.
+4.  **Robust Fallback**: If the remote dictionary is unavailable, the script gracefully falls back to a hardcoded word list, ensuring the game always works.
 
-    const dictionaries = {
-      'en_5': ['UNITY','CLOUD','PROXY','GRIDS','ALPHA','BRAVO','HOTEL'],
-      'pl_5': ['CHMURA','KODER','SKRYPT','PANEL','ALFABET','GRACZ'],
-      'en_4': ['CODE','GAME','TEST','VIEW'],
-      'pl_4': ['KODU','GRAJ','TEST'],
-      'en_6': ['ACTIVE','BUTTON','RENDER','SCRIPT'],
-      'pl_6': ['SKRYPT','WIDOKU','PANELU','GRACZA'],
-    };
+**To deploy the script:**
+1.  Link your project to Unity Gaming Services.
+2.  In the UGS Dashboard, create a new Cloud Code script named `getWordOfTheDay`.
+3.  Copy the contents of `tools/getWordOfTheDay.js` (the more advanced version) into the script and deploy.
 
-    const key = `${language}_${wordLength}`;
-    const wordList = dictionaries[key] || dictionaries['en_5'];
-    if (!wordList?.length) {
-      logger.error(`Word list not found or empty for key: ${key}`);
-      throw new Error('Word list not found.');
-    }
-
-    const now = new Date();
-    const serverDateUTC = now.toISOString().slice(0, 10);
-    const startOfYear = new Date(now.getUTCFullYear(), 0, 0);
-    const oneDay = 1000 * 60 * 60 * 24;
-    const dayOfYear = Math.floor((now - startOfYear) / oneDay);
-    const word = wordList[dayOfYear % wordList.length];
-
-    logger.info(`Selected word: ${word} for ${serverDateUTC}`);
-    return { word, date: serverDateUTC };
-  };
-  ```
-
-- Client behavior
-  - Daily Mode: fetches word from Cloud Code; falls back to a local random solution if unavailable
-  - Unlimited Mode: local random solution
 
 ---
 
 ## How It Works 🔧
 
-- Startup
-  - VContainer wires Core/Infrastructure/Presentation
-  - GameInitializer selects the target word (Daily via Cloud Code or Unlimited via local lists)
-
-- Gameplay
-  - Player inputs letters (UI keyboard or hardware keyboard)
-  - GameManager validates guesses and evaluates letters in two passes (Correct/Present/Absent)
-  - ViewModels update Tile/Key states; Views play flip/shake/toast animations
-  - EndGame modal appears on win/lose
-
-- Data
-  - Settings stored as JSON (persistentDataPath)
-  - Dictionaries loaded from Resources (planned: Addressables + CCD)
+- **Startup**: `GameLifetimeScope` (VContainer) registers all services. `GameInitializer` is then started, which fetches the target word (from Cloud Code for "Daily" or a local provider for "Unlimited") and starts the `GameManager`.
+- **Gameplay**: Player input is passed to the `GameBoardViewModel`, which delegates to the `IGameManager`. The `GameManager` validates the guess and evaluates the letters.
+- **UI Updates**: `GameBoardViewModel` listens to events from the `GameManager` and updates the state of `TileViewModel` and `KeyViewModel`. The `GameScreenView` observes these changes and plays the appropriate animations.
+- **Data Persistence**: Player settings are serialized to JSON and stored in `Application.persistentDataPath`.
 
 ---
 
 ## Roadmap 🧭
 
-- 1.0 (Play Store-ready)
-  - [x] Full UI localization (EN/PL)
-  - [ ] Dynamic backend for daily word (Cloud Code, remote dictionaries)
-  - [ ] Player statistics (local)
-  - [ ] Sound effects and basic haptics
-  - [ ] Light/Dark themes
-  - [ ] Shareable results
-  - [ ] Minimal analytics (UGS)
-  - [ ] App icon and store graphics
+### 1.0 (Play Store-ready)
+- [x] Full UI localization (EN/PL)
+- [x] Dynamic backend for daily word (Cloud Code, remote dictionaries)
+- [ ] **Player Statistics**: Track wins, streaks, and guess distribution (local storage).
+- [ ] **Sound Effects & Haptics**: Add audio-visual feedback for key interactions.
+- [ ] **Light/Dark Themes**: Leverage `tokens.uss` to easily add theme switching.
+- [ ] **Shareable Results**: Implement a "Share" button to copy emoji results to the clipboard.
+- [ ] **App Icon & Store Graphics**.
 
-- 1.1+
-  - [ ] Hard Mode (use revealed hints in subsequent guesses)
-  - [ ] Addressables/CCD word packs (easy language updates post-release)
-  - [ ] Interactive tutorial
-  - [ ] Global leaderboards (UGS)
-  - [ ] Achievements (Google Play Games)
-  - [ ] Ads (TBD)
-  - [ ] Performance and build size optimization
+### 1.1+ (Future Enhancements)
+- [ ] **Hard Mode**: Enforce the use of revealed hints in subsequent guesses.
+- [ ] **Addressables Integration**: Move dictionaries from `Resources` to Addressables for dynamic updates.
+- [ ] **Interactive Tutorial**: A guided first-time user experience.
+- [ ] **Achievements & Leaderboards**: Integrate with Google Play Games Services.
+- [ ] **Monetization**: Investigate ads or other models.
 
----
-
-## Contributing 🤝
-
-- Code Style
-  - MVVM-style separation
-  - Prefer async with UniTask in Unity layers
-  - Keep Core minimal and UI-agnostic
 
 ---
 
 ## License 📝
 
-- MIT 
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## Acknowledgements 💐
 
-- UniTask (Cysharp)
-- VContainer (hadashiA)
-- PrimeTween (Kyrylo Kuzyk)
-- UI Toolkit Safe Area (Bitbebop)
+Special thanks to the creators of these fantastic open-source packages:
 
----
-
-## Known Issues ⚠️
-
-- Word length is currently fixed at 5
-- Dictionaries are loaded from Resources (planned: Addressables/CCD)
-- Initial Cloud Code sample uses a static list (to be replaced by remote dictionaries)
+- [UniTask](https://github.com/Cysharp/UniTask) (Cysharp)
+- [VContainer](https://github.com/hadashiA/VContainer) (hadashiA)
+- [PrimeTween](https://github.com/KyryloKuzyk/PrimeTween) (Kyrylo Kuzyk)
+- [UI Toolkit Safe Area](https://github.com/Bitbebop/Unity-UI-Toolkit-SafeArea) (Bitbebop)
